@@ -12,7 +12,7 @@ export default function Dashboard() {
               src="/images/reactjs.jpg"
               width={200}
               height={150}
-              alt={""}
+              alt="React JS"
             />
             <div>
               <h5> CS1234 React JS </h5>
