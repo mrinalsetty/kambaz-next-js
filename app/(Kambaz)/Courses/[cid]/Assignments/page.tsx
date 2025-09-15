@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Assignments() {
   return (
     <div id="wd-assignments">
@@ -9,12 +11,12 @@ export default function Assignments() {
       </h3>
       <ul id="wd-assignment-list">
         <li className="wd-assignment-list-item">
-          <a
+          <Link
             href="/Courses/1234/Assignments/123"
             className="wd-assignment-link"
           >
             A1 - ENV + HTML
-          </a>{" "}
+          </Link>{" "}
         </li>
         <li className="wd-assignment-list-item">
           {/* Complete On Your Own */}
