@@ -105,10 +105,52 @@ export default function Lab1() {
               <td>90</td>
             </tr>
             <tr>
-              <td>...</td>
-              <td>...</td>
-              <td>...</td>
-              <td>...</td>
+              <td>Q3</td>
+              <td>JavaScript</td>
+              <td>2/17/21</td>
+              <td>89</td>
+            </tr>
+            <tr>
+              <td>Q4</td>
+              <td>ReactJS</td>
+              <td>2/24/21</td>
+              <td>88</td>
+            </tr>
+            <tr>
+              <td>Q5</td>
+              <td>Tailwind CSS</td>
+              <td>2/26/21</td>
+              <td>90</td>
+            </tr>
+            <tr>
+              <td>Q6</td>
+              <td>Git</td>
+              <td>3/04/21</td>
+              <td>94</td>
+            </tr>
+            <tr>
+              <td>Q7</td>
+              <td>API</td>
+              <td>3/14/21</td>
+              <td>88</td>
+            </tr>
+            <tr>
+              <td>Q8</td>
+              <td>SQL</td>
+              <td>3/17/21</td>
+              <td>96</td>
+            </tr>
+            <tr>
+              <td>Q9</td>
+              <td>Web Security</td>
+              <td>3/21/21</td>
+              <td>91</td>
+            </tr>
+            <tr>
+              <td>Q10</td>
+              <td>Integrating AI and ML</td>
+              <td>3/28/21</td>
+              <td>89</td>
             </tr>
           </tbody>
           <tfoot>
@@ -126,11 +168,17 @@ export default function Lab1() {
           id="wd-starship"
           width="400px"
           src="https://www.staradvertiser.com/wp-content/uploads/2021/08/web1_Starship-gap2.jpg"
+          alt="Starship"
         />
         <br />
         Loading a local image:
         <br />
-        <img id="wd-teslabot" src="/images/teslabot.jpg" height="200px" />
+        <img
+          id="wd-teslabot"
+          src="/images/teslabot.jpg"
+          height="200px"
+          alt="local image"
+        />
       </div>
       <div id="wd-forms">
         <h4>Form Elements</h4>
@@ -141,7 +189,7 @@ export default function Lab1() {
           <label htmlFor="wd-text-fields-password">Password:</label>
           <input
             type="password"
-            value="123@#$asd"
+            defaultValue="123@#$asd"
             id="wd-text-fields-password"
           />
           <br />
@@ -152,22 +200,25 @@ export default function Lab1() {
           <input
             type="text"
             placeholder="Doe"
-            value="Wonderland"
+            defaultValue="Wonderland"
             title="The last name"
             id="wd-text-fields-last-name"
           />
           <h5>Text boxes</h5>
           <label>Biography:</label>
           <br />
-          <textarea id="wd-textarea" cols={30} rows={10}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+          <textarea
+            id="wd-textarea"
+            cols={30}
+            rows={10}
+            defaultValue="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
             eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
             ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
             aliquip ex ea commodo consequat. Duis aute irure dolor in
             reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
             pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.
-          </textarea>
+            culpa qui officia deserunt mollit anim id est laborum."
+          />
           <h5 id="wd-buttons">Buttons</h5>
           <button
             type="button"
@@ -208,25 +259,23 @@ export default function Lab1() {
           <h5>Select one</h5>
           <label htmlFor="wd-select-one-genre"> Favorite movie genre: </label>
           <br />
-          <select id="wd-select-one-genre">
+          <select id="wd-select-one-genre" defaultValue="SCIFI">
             <option value="COMEDY">Comedy</option>
             <option value="DRAMA">Drama</option>
-            <option selected value="SCIFI">
-              Science Fiction
-            </option>
+            <option value="SCIFI">Science Fiction</option>
             <option value="FANTASY">Fantasy</option>
           </select>
           <h5>Select many</h5>
           <label htmlFor="wd-select-many-genre"> Favorite movie genres: </label>
           <br />
-          <select multiple id="wd-select-many-genre">
-            <option value="COMEDY" selected>
-              Comedy
-            </option>
+          <select
+            multiple
+            id="wd-select-many-genre"
+            defaultValue={["COMEDY", "SCIFI"]}
+          >
+            <option value="COMEDY">Comedy</option>
             <option value="DRAMA">Drama</option>
-            <option value="SCIFI" selected>
-              Science Fiction
-            </option>
+            <option value="SCIFI">Science Fiction</option>
             <option value="FANTASY">Fantasy</option>
           </select>
           <h4>Other HTML field types</h4>
@@ -240,7 +289,7 @@ export default function Lab1() {
           <label htmlFor="wd-text-fields-salary-start"> Starting salary:</label>
           <input
             type="number"
-            value="100000"
+            defaultValue="100000"
             placeholder="1000"
             id="wd-text-fields-salary-start"
           />
@@ -248,19 +297,23 @@ export default function Lab1() {
           <label htmlFor="wd-text-fields-rating"> Rating: </label>
           <input
             type="range"
-            value="4"
+            defaultValue="4"
             max="5"
             placeholder="Doe"
             id="wd-text-fields-rating"
           />
           <br />
           <label htmlFor="wd-text-fields-dob"> Date of birth: </label>
-          <input type="date" value="2000-01-21" id="wd-text-fields-dob" />
+          <input
+            type="date"
+            defaultValue="2000-01-21"
+            id="wd-text-fields-dob"
+          />
           <br />
         </form>
       </div>
       <h4>Anchor tag</h4>
-      Please{""}
+      Please{" "}
       <a href="https://www.lipsum.com" id="wd-lipsum">
         click here
       </a>{" "}
