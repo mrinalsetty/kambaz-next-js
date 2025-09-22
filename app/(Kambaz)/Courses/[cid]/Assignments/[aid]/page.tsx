@@ -13,7 +13,7 @@ export default function AssignmentEditor() {
         id="wd-description"
         defaultValue="The assignment is available online Submit a link to the landing page of your Web application running on Netlify. The landing page should include the following: Your full name and section Links to each of the lab assignments Link to the Kanbas application Links to all relevant source code repositories The Kanbas application should include a link to navigate back to the landing page."
         rows={10}
-        cols={50}
+        cols={47}
       />
       <br />
       <br />
@@ -141,28 +141,45 @@ export default function AssignmentEditor() {
           <tr>
             <td></td>
             <td>
-              Available from <br />
-              <input type="date" defaultValue="2024-05-06" />
+              <label htmlFor="wd-available-from">Available from</label>
             </td>
             <td>
-              Until <br />
-              <input type="date" defaultValue="2024-05-20" />
+              <label htmlFor="wd-available-until">Until</label>
             </td>
           </tr>
           <tr>
-            <td colSpan={3}>&nbsp;</td>
+            <td></td>
+            <td>
+              <input
+                type="date"
+                id="wd-available-from"
+                defaultValue="2024-05-06"
+              />
+            </td>
+            <td>
+              <input
+                type="date"
+                id="wd-available-until"
+                defaultValue="2024-05-20"
+              />
+            </td>
           </tr>
+          <tr>
+            <td colSpan={3}>
+              <hr />
+            </td>
+          </tr>
+
           <tr>
             <td></td>
             <td></td>
+            <td align="right" valign="top">
+              <button id="wd-cancel-assignment">Cancel</button>{" "}
+              <button id="wd-save-assignment">Save</button>
+            </td>
           </tr>
         </tbody>
       </table>
-      <hr />
-      <div style={{ display: "flex", justifyContent: "flex-end", gap: "5px" }}>
-        <button id="wd-cancel-assignment">Cancel</button>
-        <button id="wd-save-assignment">Save</button>
-      </div>
     </div>
   );
 }
