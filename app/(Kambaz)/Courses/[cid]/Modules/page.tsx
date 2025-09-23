@@ -5,6 +5,7 @@ export default function Modules() {
       <button id="wd-modules-view-progress">View Progress</button>{" "}
       <select id="wd-modules-select" defaultValue="Publish All">
         <option value="Publish All">Publish All</option>
+        <option value="Unpublish All">Unpublish All</option>
       </select>{" "}
       <button id="wd-modules-add">+ Module</button>
       <ul id="wd-modules">
