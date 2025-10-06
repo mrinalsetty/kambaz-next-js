@@ -38,7 +38,7 @@ export default function BootstrapNavigation() {
           <CardImg variant="top" src="/images/stacked.jpg" />
           <CardBody>
             <CardTitle>Stacking Starship</CardTitle>
-            <CardText className="wd-bg-color-transparent wd-fg-color-black">
+            <CardText>
               Stacking the most powerful rocket in history. Mars or bust!
             </CardText>
             <Button variant="primary">Boldly Go</Button>

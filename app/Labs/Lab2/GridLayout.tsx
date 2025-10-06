@@ -26,13 +26,11 @@ export default function GridLayout() {
       <div id="wd-css-side-bars" className="wd-grid-row">
         <div className="wd-grid-col-left-sidebar wd-bg-color-yellow">
           <h3>Side bar</h3>
-          <p className="wd-bg-color-transparent wd-fg-color-black">
-            This is the left sidebar
-          </p>{" "}
+          <p>This is the left sidebar</p>{" "}
         </div>
         <div className="wd-grid-col-main-content wd-bg-color-blue wd-fg-color-white">
           <h3>Main content</h3>
-          <p className="wd-bg-color-transparent">
+          <p>
             This is the main content. This is the main content. This is the main
             content.
           </p>{" "}

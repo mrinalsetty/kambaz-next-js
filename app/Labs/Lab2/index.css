@@ -1,7 +1,7 @@
-p {
+/* p {
   background-color: green;
   color: white;
-}
+} */
 p#wd-id-selector-1 {
   background-color: red;
   color: white;
@@ -51,9 +51,6 @@ p#wd-id-selector-2 {
 }
 .wd-bg-color-gray {
   background-color: lightgray;
-}
-.wd-bg-color-transparent {
-  background-color: transparent;
 }
 .wd-border-fat {
   border-width: 20px 30px 20px 30px;
