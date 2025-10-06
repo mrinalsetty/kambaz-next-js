@@ -1,5 +1,5 @@
 "use client";
-/* eslint-disable @next/next/no-img-element */
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ListGroup, ListGroupItem } from "react-bootstrap";
@@ -32,7 +32,6 @@ export default function KambazNavigation() {
       style={{ width: 120 }}
       id="wd-kambaz-navigation"
     >
-      {/* NEU badge */}
       <ListGroupItem
         className="bg-black border-0 text-center"
         as="a"
@@ -40,10 +39,14 @@ export default function KambazNavigation() {
         id="wd-neu-link"
         target="_blank"
       >
-        <img src="/images/NEU.png" width={75} alt="Northeastern University" />
+        <Image
+          src="/images/NEU.png"
+          width={75}
+          height={75}
+          alt="Northeastern University"
+        />
       </ListGroupItem>
 
-      {/* Navigation items with per-route active styling */}
       {NAV_ITEMS.map(({ href, label, Icon, external }) => {
         const isActive =
           !external && (pathname === href || pathname.startsWith(href + "/"));
@@ -62,7 +65,6 @@ export default function KambazNavigation() {
                 isActive ? "text-danger" : "text-white"
               }`}
             >
-              {/* Icons are red in both states; active state flips bg + text per spec */}
               <Icon className="fs-1 text-danger" />
               <br />
               {label}
