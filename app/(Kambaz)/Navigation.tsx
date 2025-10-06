@@ -21,7 +21,7 @@ export default function KambazNavigation() {
         id="wd-neu-link"
       >
         <Image
-          src="/images/NEU.png"
+          src="/images/neu.png"
           width={75}
           height={75}
           alt="Northeastern University"
