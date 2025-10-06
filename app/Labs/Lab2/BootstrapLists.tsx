@@ -49,7 +49,7 @@ export default function BootstrapLists() {
             Enders Game
           </ListGroupItem>
           <ListGroupItem action onClick={() => alert("New book added")}>
-            Harry Potter
+            Add another book
           </ListGroupItem>
         </ListGroup>
       </div>

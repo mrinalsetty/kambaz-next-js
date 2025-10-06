@@ -16,8 +16,8 @@ const caretStyle = { fontSize: "0.9rem", color: "#2b363dff" };
 
 export default function Assignments() {
   return (
-    <div id="wd-assignments">
-      <div className="d-flex align-items-center">
+    <div id="wd-assignments" className="p-3">
+      <div className="d-flex align-items-center mb-3">
         <div className="position-relative" style={{ width: 560 }}>
           <BsSearch
             className="position-absolute"
@@ -45,25 +45,13 @@ export default function Assignments() {
         <div className="ms-auto d-flex align-items-center gap-2">
           <button
             id="wd-assignments-add-group"
-            className="px-4 py-2"
-            style={{
-              borderRadius: 5,
-              backgroundColor: "#f5f6f8",
-              border: "1px solid #d0d7de",
-              color: "#2b363dff",
-            }}
+            className="px-4 py-2 rounded bg-light border border-gray text-dark"
           >
             + Group
           </button>
           <button
             id="wd-assignments-add"
-            className="px-4 py-2"
-            style={{
-              borderRadius: 5,
-              backgroundColor: "#d2222d",
-              border: "1px solid #d2222d",
-              color: "#ffffff",
-            }}
+            className="px-4 py-2 rounded bg-danger border border-danger text-white"
           >
             + Assignment
           </button>

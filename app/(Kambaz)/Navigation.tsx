@@ -1,31 +1,12 @@
-"use client";
-import Image from "next/image";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { ListGroup, ListGroupItem } from "react-bootstrap";
 import { AiOutlineDashboard } from "react-icons/ai";
 import { IoCalendarOutline } from "react-icons/io5";
-import { LiaBookSolid, LiaCogSolid } from "react-icons/lia";
-import { FaInbox, FaRegCircleUser, FaGithub } from "react-icons/fa6";
-
-const NAV_ITEMS = [
-  { href: "/Account", label: "Account", Icon: FaRegCircleUser },
-  { href: "/Dashboard", label: "Dashboard", Icon: AiOutlineDashboard },
-  { href: "/Courses", label: "Courses", Icon: LiaBookSolid },
-  { href: "/Calendar", label: "Calendar", Icon: IoCalendarOutline },
-  { href: "/Inbox", label: "Inbox", Icon: FaInbox },
-  { href: "/Labs", label: "Labs", Icon: LiaCogSolid },
-  {
-    href: "https://github.com/mrinalsetty/kambaz-next-js",
-    label: "GitHub",
-    Icon: FaGithub,
-    external: true,
-  },
-];
+import { LiaBookSolid } from "react-icons/lia";
+import { FaInbox, FaRegCircleUser, FaGithub, FaFlask } from "react-icons/fa6";
+import { ListGroup, ListGroupItem } from "react-bootstrap";
+import Link from "next/link";
+import Image from "next/image";
 
 export default function KambazNavigation() {
-  const pathname = usePathname();
-
   return (
     <ListGroup
       className="rounded-0 position-fixed bottom-0 top-0 d-none d-md-block bg-black z-2"
@@ -35,43 +16,95 @@ export default function KambazNavigation() {
       <ListGroupItem
         className="bg-black border-0 text-center"
         as="a"
+        target="_blank"
         href="https://www.northeastern.edu/"
         id="wd-neu-link"
-        target="_blank"
       >
         <Image
-          src="/images/neu.png"
+          src="/images/NEU.png"
           width={75}
           height={75}
           alt="Northeastern University"
         />
       </ListGroupItem>
-
-      {NAV_ITEMS.map(({ href, label, Icon, external }) => {
-        const isActive =
-          !external && (pathname === href || pathname.startsWith(href + "/"));
-        return (
-          <ListGroupItem
-            key={href}
-            className={`border-0 text-center ${
-              isActive ? "bg-white" : "bg-black"
-            }`}
-          >
-            <Link
-              href={href}
-              target={external ? "_blank" : undefined}
-              id={`wd-${label.toLowerCase()}-link`}
-              className={`text-decoration-none ${
-                isActive ? "text-danger" : "text-white"
-              }`}
-            >
-              <Icon className="fs-1 text-danger" />
-              <br />
-              {label}
-            </Link>
-          </ListGroupItem>
-        );
-      })}
+      <ListGroupItem className="border-0 bg-black text-center">
+        <Link
+          href="/Account"
+          id="wd-account-link"
+          className="text-white text-decoration-none"
+        >
+          <FaRegCircleUser className="fs-1 text-white" />
+          <br />
+          Account
+        </Link>
+      </ListGroupItem>
+      <ListGroupItem className="border-0 bg-white text-center">
+        <Link
+          href="/Dashboard"
+          id="wd-dashboard-link"
+          className="text-danger text-decoration-none"
+        >
+          <AiOutlineDashboard className="fs-1 text-danger" />
+          <br />
+          Dashboard
+        </Link>
+      </ListGroupItem>
+      <ListGroupItem className="border-0 bg-black text-center">
+        <Link
+          href="/Courses"
+          id="wd-courses-link"
+          className="text-white text-decoration-none"
+        >
+          <LiaBookSolid className="fs-1 text-danger" />
+          <br />
+          Courses
+        </Link>
+      </ListGroupItem>
+      <ListGroupItem className="border-0 bg-black text-center">
+        <Link
+          href="/Calendar"
+          id="wd-calendar-link"
+          className="text-white text-decoration-none"
+        >
+          <IoCalendarOutline className="fs-1 text-danger" />
+          <br />
+          Calendar
+        </Link>
+      </ListGroupItem>
+      <ListGroupItem className="border-0 bg-black text-center">
+        <Link
+          href="/Inbox"
+          id="wd-inbox-link"
+          className="text-white text-decoration-none"
+        >
+          <FaInbox className="fs-1 text-danger" />
+          <br />
+          Inbox
+        </Link>
+      </ListGroupItem>
+      <ListGroupItem className="border-0 bg-black text-center">
+        <Link
+          href="/Labs"
+          id="wd-labs-link"
+          className="text-white text-decoration-none"
+        >
+          <FaFlask className="fs-1 text-danger" />
+          <br />
+          Labs
+        </Link>
+      </ListGroupItem>
+      <ListGroupItem className="border-0 bg-black text-center">
+        <Link
+          href="https://github.com/mrinalsetty/kambaz-next-js"
+          id="wd-github-link"
+          className="text-white text-decoration-none"
+          target="_blank"
+        >
+          <FaGithub className="fs-1 text-danger" />
+          <br />
+          GitHub
+        </Link>
+      </ListGroupItem>
     </ListGroup>
   );
 }

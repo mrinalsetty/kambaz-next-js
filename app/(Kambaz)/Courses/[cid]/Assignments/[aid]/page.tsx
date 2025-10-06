@@ -11,16 +11,14 @@ import {
 } from "react-bootstrap";
 
 export default function AssignmentEditor() {
-  // shared “card” look for the two boxes
   const boxStyle: React.CSSProperties = {
     border: "1px solid #e5e7eb",
     borderRadius: 12,
     backgroundColor: "#ffffff",
   };
 
-  // dotted underline (red) used only for the two words
   const dottedRed: React.CSSProperties = {
-    color: "#2b363d", // same as surrounding text
+    color: "#2b363d",
     textDecorationLine: "underline",
     textDecorationStyle: "dotted",
     textDecorationColor: "#dc2626",
@@ -29,13 +27,11 @@ export default function AssignmentEditor() {
   return (
     <div id="wd-assignments-editor" className="p-3" style={{ maxWidth: 720 }}>
       <Form>
-        {/* Assignment name */}
         <FormGroup className="mb-3">
           <FormLabel className="fw-bold">Assignment Name</FormLabel>
           <FormControl defaultValue="A1 - ENV + HTML" />
         </FormGroup>
 
-        {/* Description preview (white background, no dotted underline on 'available online') */}
         <FormGroup className="mb-4">
           <div className="p-4" style={{ ...boxStyle }}>
             <p className="mb-3" style={{ color: "#2b363d" }}>
@@ -67,7 +63,6 @@ export default function AssignmentEditor() {
           </div>
         </FormGroup>
 
-        {/* Points */}
         <FormGroup as={Row} className="mb-3">
           <FormLabel column sm={3} className="text-end">
             Points
@@ -77,7 +72,6 @@ export default function AssignmentEditor() {
           </Col>
         </FormGroup>
 
-        {/* Assignment Group */}
         <FormGroup as={Row} className="mb-3">
           <FormLabel column sm={3} className="text-end">
             Assignment Group
@@ -92,7 +86,6 @@ export default function AssignmentEditor() {
           </Col>
         </FormGroup>
 
-        {/* Display Grade as */}
         <FormGroup as={Row} className="mb-3">
           <FormLabel column sm={3} className="text-end">
             Display Grade as
@@ -106,7 +99,6 @@ export default function AssignmentEditor() {
           </Col>
         </FormGroup>
 
-        {/* Submission Type + BOX: Online select INSIDE the same box as the options */}
         <FormGroup as={Row} className="mb-3">
           <FormLabel column sm={3} className="text-end">
             Submission Type
@@ -148,7 +140,6 @@ export default function AssignmentEditor() {
           </Col>
         </FormGroup>
 
-        {/* Assign + BOX: Assign to / Due / Available from / Until */}
         <FormGroup as={Row} className="mb-3">
           <FormLabel column sm={3} className="text-end">
             Assign
@@ -198,7 +189,7 @@ export default function AssignmentEditor() {
             id="wd-cancel-assignment"
             variant="light"
             className="border"
-            style={{ borderColor: "#d0d7de" }} // gray border
+            style={{ borderColor: "#d0d7de" }}
           >
             Cancel
           </Button>
