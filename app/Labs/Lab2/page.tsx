@@ -78,23 +78,41 @@ export default function Lab2() {
           </div>
         </div>
         <ForegroundColors />
+        <br />
         <BackgroundColors />
+        <br />
         <Borders />
+        <br />
         <Padding />
+        <br />
         <Margins />
+        <br />
         <Corners />
+        <br />
         <Dimensions />
+        <br />
         <Positions />
+        <br />
         <Zindex />
+        <br />
         <Float />
+        <br />
         <GridLayout />
+        <br />
         <Flex />
+        <br />
         <ReactIconsSampler />
+        <br />
         <BootstrapGrids />
+        <br />
         <ScreenSizeLabel />
+        <br />
         <BootstrapTables />
+        <br />
         <BootstrapLists />
+        <br />
         <BootstrapForms />
+        <br />
         <BootstrapNavigation />
       </div>
     </Container>
