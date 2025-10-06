@@ -6,9 +6,17 @@ import {
   DropdownToggle,
 } from "react-bootstrap";
 import { FaPlus } from "react-icons/fa6";
+import { MdDoNotDisturbAlt } from "react-icons/md";
 import GreenCheckmark from "./GreenCheckMark";
 
 export default function ModulesControls() {
+  const unpublishIconStyle: React.CSSProperties = {
+    fontSize: 21,
+    marginRight: 9,
+    position: "relative",
+    top: -1,
+  };
+
   return (
     <div id="wd-modules-controls" className="text-nowrap">
       <Button
@@ -36,9 +44,11 @@ export default function ModulesControls() {
             <GreenCheckmark /> Publish modules only
           </DropdownItem>
           <DropdownItem id="wd-unpublish-all-modules-and-items">
+            <MdDoNotDisturbAlt style={unpublishIconStyle} />
             Unpublish all modules and items
           </DropdownItem>
           <DropdownItem id="wd-unpublish-modules-only">
+            <MdDoNotDisturbAlt style={unpublishIconStyle} />
             Unpublish modules only
           </DropdownItem>
         </DropdownMenu>

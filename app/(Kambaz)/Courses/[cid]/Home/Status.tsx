@@ -1,8 +1,10 @@
 import { Button } from "react-bootstrap";
-import { MdDoNotDisturbAlt } from "react-icons/md";
+import { MdDoNotDisturbAlt, MdOutlineStackedBarChart } from "react-icons/md";
 import { FaCheckCircle } from "react-icons/fa";
 import { BiImport } from "react-icons/bi";
 import { LiaFileImportSolid } from "react-icons/lia";
+import { AiOutlineHome, AiOutlineBarChart } from "react-icons/ai";
+import { IoMegaphoneOutline, IoNotificationsOutline } from "react-icons/io5";
 
 export default function CourseStatus() {
   return (
@@ -37,22 +39,27 @@ export default function CourseStatus() {
       </Button>
 
       <Button variant="secondary" size="lg" className="w-100 text-start mt-2">
+        <AiOutlineHome className="me-2 fs-5" />
         Choose Home Page
       </Button>
 
       <Button variant="secondary" size="lg" className="w-100 text-start mt-2">
+        <MdOutlineStackedBarChart className="me-2 fs-5" />
         View Course Stream
       </Button>
 
       <Button variant="secondary" size="lg" className="w-100 text-start mt-2">
+        <IoMegaphoneOutline className="me-2 fs-5" />
         New Announcement
       </Button>
 
       <Button variant="secondary" size="lg" className="w-100 text-start mt-2">
+        <AiOutlineBarChart className="me-2 fs-5" />
         Course Analytics
       </Button>
 
       <Button variant="secondary" size="lg" className="w-100 text-start mt-2">
+        <IoNotificationsOutline className="me-2 fs-5" />
         View Course Notifications
       </Button>
     </div>

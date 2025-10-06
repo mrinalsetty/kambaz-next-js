@@ -13,7 +13,7 @@ import {
 export default function AssignmentEditor() {
   // shared “card” look for the two boxes
   const boxStyle: React.CSSProperties = {
-    border: "1px solid #e5e7eb", // light gray
+    border: "1px solid #e5e7eb",
     borderRadius: 12,
     backgroundColor: "#ffffff",
   };
@@ -23,7 +23,7 @@ export default function AssignmentEditor() {
     color: "#2b363d", // same as surrounding text
     textDecorationLine: "underline",
     textDecorationStyle: "dotted",
-    textDecorationColor: "#dc2626", // red-600-ish
+    textDecorationColor: "#dc2626",
   };
 
   return (
@@ -198,7 +198,7 @@ export default function AssignmentEditor() {
             id="wd-cancel-assignment"
             variant="light"
             className="border"
-            style={{ borderColor: "#d0d7de" }} // ⟵ gray border
+            style={{ borderColor: "#d0d7de" }} // gray border
           >
             Cancel
           </Button>
