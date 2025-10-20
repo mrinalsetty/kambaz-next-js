@@ -1,70 +1,53 @@
+"use client";
 import Link from "next/link";
+import { useParams, usePathname } from "next/navigation";
+
 export default function CourseNavigation() {
+  const { cid } = useParams<{ cid: string }>();
+  const pathname = usePathname();
+
+  const links = [
+    "Home",
+    "Modules",
+    "Piazza",
+    "Zoom",
+    "Assignments",
+    "Quizzes",
+    "Grades",
+    "People",
+  ];
+
+  const segment = (label: string) => label;
+
+  const idMap: Record<string, string> = {
+    Home: "wd-course-home-link",
+    Modules: "wd-course-modules-link",
+    Piazza: "wd-course-piazza-link",
+    Zoom: "wd-course-zoom-link",
+    Assignments: "wd-course-quizzes-link",
+    Quizzes: "wd-course-assignments-link",
+    Grades: "wd-course-grades-link",
+    People: "wd-course-people-link",
+  };
+
   return (
     <div id="wd-courses-navigation" className="wd list-group fs-5 rounded-0">
-      <Link
-        href="/Courses/1234/Home"
-        id="wd-course-home-link"
-        className="list-group-item active border-0"
-      >
-        Home
-      </Link>
-      <br />
-      <Link
-        href="/Courses/1234/Modules"
-        id="wd-course-modules-link"
-        className="list-group-item text-danger border-0"
-      >
-        Modules
-      </Link>
-      <br />
-      <Link
-        href="/Courses/1234/Piazza"
-        id="wd-course-piazza-link"
-        className="list-group-item text-danger border-0"
-      >
-        Piazza
-      </Link>
-      <br />
-      <Link
-        href="/Courses/1234/Zoom"
-        id="wd-course-zoom-link"
-        className="list-group-item text-danger border-0"
-      >
-        Zoom
-      </Link>
-      <br />
-      <Link
-        href="/Courses/1234/Assignments"
-        id="wd-course-quizzes-link"
-        className="list-group-item text-danger border-0"
-      >
-        Assignments
-      </Link>
-      <br />
-      <Link
-        href="/Courses/1234/Quizzes"
-        id="wd-course-assignments-link"
-        className="list-group-item text-danger border-0"
-      >
-        Quizzes
-      </Link>
-      <br />
-      <Link
-        href="/Courses/1234/Grades"
-        id="wd-course-grades-link"
-        className="list-group-item text-danger border-0"
-      >
-        Grades
-      </Link>
-      <br />
-      <Link
-        href="/Courses/1234/People/Table"
-        id="wd-course-people-link"
-        className="list-group-item text-danger border-0"
-      >
-        People
-      </Link>
+      {links.map((label) => {
+        const href = `/Courses/${cid}/${segment(label)}`;
+        const isActive = pathname.startsWith(href);
+        return (
+          <Link
+            key={label}
+            href={href}
+            id={idMap[label]}
+            className={`list-group-item border-0 ${
+              isActive ? "active" : "text-danger"
+            }`}
+          >
+            {label}
+          </Link>
+        );
+      })}
       <br />
     </div>
   );

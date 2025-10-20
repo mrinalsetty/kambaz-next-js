@@ -1,5 +1,6 @@
 "use client";
 
+import { useParams } from "next/navigation";
 import {
   Form,
   Row,
@@ -9,8 +10,24 @@ import {
   FormLabel,
   FormControl,
 } from "react-bootstrap";
+import { assignments } from "../../../../Database";
+
+type Assignment = {
+  _id: string;
+  course: string;
+  group?: "ASSIGNMENTS" | "QUIZZES" | "EXAMS" | "PROJECTS" | string;
+  title?: string;
+  points?: number;
+  availableText?: string;
+  dueText?: string;
+};
 
 export default function AssignmentEditor() {
+  const { cid, aid } = useParams<{ cid: string; aid: string }>();
+  const a = (assignments as Assignment[]).find(
+    (x) => x._id === aid && x.course === cid
+  );
+
   const boxStyle: React.CSSProperties = {
     border: "1px solid #e5e7eb",
     borderRadius: 12,
@@ -29,7 +46,7 @@ export default function AssignmentEditor() {
       <Form>
         <FormGroup className="mb-3">
           <FormLabel className="fw-bold">Assignment Name</FormLabel>
-          <FormControl defaultValue="A1 - ENV + HTML" />
+          <FormControl defaultValue={a?.title ?? "A1 - ENV + HTML"} />
         </FormGroup>
 
         <FormGroup className="mb-4">
@@ -68,7 +85,7 @@ export default function AssignmentEditor() {
             Points
           </FormLabel>
           <Col sm={9}>
-            <FormControl type="number" defaultValue={100} />
+            <FormControl type="number" defaultValue={a?.points ?? 100} />
           </Col>
         </FormGroup>
 
@@ -77,7 +94,7 @@ export default function AssignmentEditor() {
             Assignment Group
           </FormLabel>
           <Col sm={9}>
-            <Form.Select defaultValue="ASSIGNMENTS">
+            <Form.Select defaultValue={(a?.group as string) ?? "ASSIGNMENTS"}>
               <option value="ASSIGNMENTS">ASSIGNMENTS</option>
               <option value="QUIZZES">QUIZZES</option>
               <option value="EXAMS">EXAMS</option>
@@ -148,14 +165,12 @@ export default function AssignmentEditor() {
             <div className="p-3" style={boxStyle}>
               <div className="mb-1">Assign to</div>
               <FormControl defaultValue="Everyone" className="mb-3" />
-
               <div className="mb-1">Due</div>
               <FormControl
                 type="date"
                 defaultValue="2024-05-13"
                 className="mb-3"
               />
-
               <div className="row g-3">
                 <div className="col-6">
                   <FormLabel htmlFor="wd-available-from" className="mb-1">

@@ -28,8 +28,12 @@ import Styles from "./Styles";
 import Add from "./Add";
 import Square from "./Square";
 import Highlight from "./Highlight";
+import PathParameters from "./PathParamters";
+import TodoItem from "./todos/TodoItem";
+import TodoList from "./todos/TodoList";
 
 export default function Lab3() {
+  console.log("Hello World!");
   return (
     <div id="wd-lab3">
       <h3>Lab 3</h3>
@@ -74,6 +78,11 @@ export default function Lab3() {
         voluptates.
       </Highlight>
       <hr />
+      <PathParameters />
+      <hr />
+      <TodoItem />
+      <hr />
+      <TodoList />
     </div>
   );
 }
