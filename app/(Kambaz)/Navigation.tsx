@@ -32,7 +32,7 @@ export default function KambazNavigation() {
         className="bg-black border-0 text-center"
       >
         <Image
-          src="/images/NEU.png"
+          src="/images/neu.png"
           width={75}
           height={75}
           alt="Northeastern University"
