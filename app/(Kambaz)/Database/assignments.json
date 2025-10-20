@@ -1,0 +1,396 @@
+[
+  {
+    "_id": "A101",
+    "title": "Propulsion Assignment",
+    "course": "RS101",
+    "group": "ASSIGNMENTS"
+  },
+  {
+    "_id": "A102",
+    "title": "Combustion Analysis",
+    "course": "RS101",
+    "group": "ASSIGNMENTS"
+  },
+  {
+    "_id": "A103",
+    "title": "Nozzle Design Project",
+    "course": "RS101",
+    "group": "PROJECTS"
+  },
+
+  {
+    "_id": "A201",
+    "title": "Aerodynamics Quiz",
+    "course": "RS102",
+    "group": "QUIZZES"
+  },
+  {
+    "_id": "A202",
+    "title": "Flow Analysis",
+    "course": "RS102",
+    "group": "ASSIGNMENTS"
+  },
+  {
+    "_id": "A203",
+    "title": "Heating Analysis",
+    "course": "RS102",
+    "group": "ASSIGNMENTS"
+  },
+
+  {
+    "_id": "A301",
+    "title": "Structural Design Task",
+    "course": "RS103",
+    "group": "PROJECTS"
+  },
+  {
+    "_id": "A302",
+    "title": "Orbital Calculations",
+    "course": "RS103",
+    "group": "ASSIGNMENTS"
+  },
+  {
+    "_id": "A303",
+    "title": "Systems Engineering Exam",
+    "course": "RS103",
+    "group": "EXAMS"
+  },
+
+  {
+    "_id": "A304",
+    "title": "Thrust Curve Analysis",
+    "course": "RS101",
+    "group": "ASSIGNMENTS"
+  },
+  {
+    "_id": "A305",
+    "title": "Propulsion Concepts Quiz 1",
+    "course": "RS101",
+    "group": "QUIZZES"
+  },
+  {
+    "_id": "A306",
+    "title": "Propulsion Concepts Quiz 2",
+    "course": "RS101",
+    "group": "QUIZZES"
+  },
+  {
+    "_id": "A307",
+    "title": "Midterm Propulsion Exam",
+    "course": "RS101",
+    "group": "EXAMS"
+  },
+  {
+    "_id": "A308",
+    "title": "Final Propulsion Exam",
+    "course": "RS101",
+    "group": "EXAMS"
+  },
+
+  {
+    "_id": "A309",
+    "title": "Wing Profile Assignment",
+    "course": "RS102",
+    "group": "ASSIGNMENTS"
+  },
+  {
+    "_id": "A310",
+    "title": "Aerodynamics Quiz 2",
+    "course": "RS102",
+    "group": "QUIZZES"
+  },
+  {
+    "_id": "A311",
+    "title": "Subsonic/Supersonic Exam 1",
+    "course": "RS102",
+    "group": "EXAMS"
+  },
+  {
+    "_id": "A312",
+    "title": "Boundary Layer Exam 2",
+    "course": "RS102",
+    "group": "EXAMS"
+  },
+  {
+    "_id": "A313",
+    "title": "Airfoil Design Project",
+    "course": "RS102",
+    "group": "PROJECTS"
+  },
+
+  {
+    "_id": "A314",
+    "title": "Payload Integration Assignment",
+    "course": "RS103",
+    "group": "ASSIGNMENTS"
+  },
+  {
+    "_id": "A315",
+    "title": "Thermal Control Assignment",
+    "course": "RS103",
+    "group": "ASSIGNMENTS"
+  },
+  {
+    "_id": "A316",
+    "title": "Systems Exam 2",
+    "course": "RS103",
+    "group": "EXAMS"
+  },
+  {
+    "_id": "A317",
+    "title": "Spacecraft Basics Quiz 1",
+    "course": "RS103",
+    "group": "QUIZZES"
+  },
+  {
+    "_id": "A318",
+    "title": "Spacecraft Basics Quiz 2",
+    "course": "RS103",
+    "group": "QUIZZES"
+  },
+
+  {
+    "_id": "A319",
+    "title": "Functional Groups Assignment",
+    "course": "RS104",
+    "group": "ASSIGNMENTS"
+  },
+  {
+    "_id": "A320",
+    "title": "Reaction Mechanisms Assignment",
+    "course": "RS104",
+    "group": "ASSIGNMENTS"
+  },
+  {
+    "_id": "A321",
+    "title": "Spectroscopy Assignment",
+    "course": "RS104",
+    "group": "ASSIGNMENTS"
+  },
+  {
+    "_id": "A322",
+    "title": "Organic Quiz 1",
+    "course": "RS104",
+    "group": "QUIZZES"
+  },
+  {
+    "_id": "A323",
+    "title": "Organic Quiz 2",
+    "course": "RS104",
+    "group": "QUIZZES"
+  },
+  {
+    "_id": "A324",
+    "title": "Organic Exam 1",
+    "course": "RS104",
+    "group": "EXAMS"
+  },
+  {
+    "_id": "A325",
+    "title": "Organic Exam 2",
+    "course": "RS104",
+    "group": "EXAMS"
+  },
+  {
+    "_id": "A326",
+    "title": "Synthesis Project",
+    "course": "RS104",
+    "group": "PROJECTS"
+  },
+
+  {
+    "_id": "A327",
+    "title": "Coordination Chemistry Assignment",
+    "course": "RS105",
+    "group": "ASSIGNMENTS"
+  },
+  {
+    "_id": "A328",
+    "title": "Crystal Field Theory Assignment",
+    "course": "RS105",
+    "group": "ASSIGNMENTS"
+  },
+  {
+    "_id": "A329",
+    "title": "Organometallics Assignment",
+    "course": "RS105",
+    "group": "ASSIGNMENTS"
+  },
+  {
+    "_id": "A330",
+    "title": "Inorganic Quiz 1",
+    "course": "RS105",
+    "group": "QUIZZES"
+  },
+  {
+    "_id": "A331",
+    "title": "Inorganic Quiz 2",
+    "course": "RS105",
+    "group": "QUIZZES"
+  },
+  {
+    "_id": "A332",
+    "title": "Inorganic Exam 1",
+    "course": "RS105",
+    "group": "EXAMS"
+  },
+  {
+    "_id": "A333",
+    "title": "Inorganic Exam 2",
+    "course": "RS105",
+    "group": "EXAMS"
+  },
+  {
+    "_id": "A334",
+    "title": "Catalysis Project",
+    "course": "RS105",
+    "group": "PROJECTS"
+  },
+
+  {
+    "_id": "A335",
+    "title": "Thermodynamics Assignment",
+    "course": "RS106",
+    "group": "ASSIGNMENTS"
+  },
+  {
+    "_id": "A336",
+    "title": "Kinetics Assignment",
+    "course": "RS106",
+    "group": "ASSIGNMENTS"
+  },
+  {
+    "_id": "A337",
+    "title": "Quantum Mechanics Assignment",
+    "course": "RS106",
+    "group": "ASSIGNMENTS"
+  },
+  {
+    "_id": "A338",
+    "title": "Physical Chem Quiz 1",
+    "course": "RS106",
+    "group": "QUIZZES"
+  },
+  {
+    "_id": "A339",
+    "title": "Physical Chem Quiz 2",
+    "course": "RS106",
+    "group": "QUIZZES"
+  },
+  {
+    "_id": "A340",
+    "title": "Physical Chem Exam 1",
+    "course": "RS106",
+    "group": "EXAMS"
+  },
+  {
+    "_id": "A341",
+    "title": "Physical Chem Exam 2",
+    "course": "RS106",
+    "group": "EXAMS"
+  },
+  {
+    "_id": "A342",
+    "title": "Spectroscopy Project",
+    "course": "RS106",
+    "group": "PROJECTS"
+  },
+
+  {
+    "_id": "A343",
+    "title": "Phonology Assignment",
+    "course": "RS107",
+    "group": "ASSIGNMENTS"
+  },
+  {
+    "_id": "A344",
+    "title": "Morphology Assignment",
+    "course": "RS107",
+    "group": "ASSIGNMENTS"
+  },
+  {
+    "_id": "A345",
+    "title": "Epigraphy Assignment",
+    "course": "RS107",
+    "group": "ASSIGNMENTS"
+  },
+  {
+    "_id": "A346",
+    "title": "Languages Quiz 1",
+    "course": "RS107",
+    "group": "QUIZZES"
+  },
+  {
+    "_id": "A347",
+    "title": "Languages Quiz 2",
+    "course": "RS107",
+    "group": "QUIZZES"
+  },
+  {
+    "_id": "A348",
+    "title": "Philology Exam 1",
+    "course": "RS107",
+    "group": "EXAMS"
+  },
+  {
+    "_id": "A349",
+    "title": "Philology Exam 2",
+    "course": "RS107",
+    "group": "EXAMS"
+  },
+  {
+    "_id": "A350",
+    "title": "Inscription Project",
+    "course": "RS107",
+    "group": "PROJECTS"
+  },
+
+  {
+    "_id": "A351",
+    "title": "Alliance Case Study",
+    "course": "RS108",
+    "group": "ASSIGNMENTS"
+  },
+  {
+    "_id": "A352",
+    "title": "Conflict Mediation Assignment",
+    "course": "RS108",
+    "group": "ASSIGNMENTS"
+  },
+  {
+    "_id": "A353",
+    "title": "Diplomatic Protocols Assignment",
+    "course": "RS108",
+    "group": "ASSIGNMENTS"
+  },
+  {
+    "_id": "A354",
+    "title": "Diplomacy Quiz 1",
+    "course": "RS108",
+    "group": "QUIZZES"
+  },
+  {
+    "_id": "A355",
+    "title": "Diplomacy Quiz 2",
+    "course": "RS108",
+    "group": "QUIZZES"
+  },
+  {
+    "_id": "A356",
+    "title": "Diplomacy Exam 1",
+    "course": "RS108",
+    "group": "EXAMS"
+  },
+  {
+    "_id": "A357",
+    "title": "Diplomacy Exam 2",
+    "course": "RS108",
+    "group": "EXAMS"
+  },
+  {
+    "_id": "A358",
+    "title": "Treaty Simulation Project",
+    "course": "RS108",
+    "group": "PROJECTS"
+  }
+]

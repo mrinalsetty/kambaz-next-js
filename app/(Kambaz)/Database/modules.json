@@ -1,0 +1,633 @@
+[
+  {
+    "_id": "M101",
+    "name": "Introduction to Rocket Propulsion",
+    "description": "Basic principles of rocket propulsion and rocket engines.",
+    "course": "RS101",
+    "lessons": [
+      {
+        "_id": "L101",
+        "name": "History of Rocketry",
+        "description": "A brief history of rocketry and space exploration.",
+        "module": "M101"
+      },
+      {
+        "_id": "L102",
+        "name": "Rocket Propulsion Fundamentals",
+        "description": "Basic principles of rocket propulsion.",
+        "module": "M101"
+      },
+      {
+        "_id": "L103",
+        "name": "Rocket Engine Types",
+        "description": "Overview of different types of rocket engines.",
+        "module": "M101"
+      }
+    ]
+  },
+  {
+    "_id": "M102",
+    "name": "Fuel and Combustion",
+    "description": "Understanding rocket fuel, combustion processes, and efficiency.",
+    "course": "RS101",
+    "lessons": [
+      {
+        "_id": "L201",
+        "name": "Rocket Fuel",
+        "description": "Overview of different types of rocket fuels.",
+        "module": "M102"
+      },
+      {
+        "_id": "L202",
+        "name": "Combustion Processes",
+        "description": "Understanding combustion processes and efficiency.",
+        "module": "M102"
+      },
+      {
+        "_id": "L203",
+        "name": "Combustion Instability",
+        "description": "Understanding combustion instability and mitigation.",
+        "module": "M102"
+      }
+    ]
+  },
+  {
+    "_id": "M103",
+    "name": "Nozzle Design",
+    "description": "Principles of rocket nozzle design and performance optimization.",
+    "course": "RS101",
+    "lessons": [
+      {
+        "_id": "L301",
+        "name": "Nozzle Design",
+        "description": "Overview of different types of rocket nozzles.",
+        "module": "M103"
+      },
+      {
+        "_id": "L302",
+        "name": "Nozzle Performance",
+        "description": "Understanding nozzle performance and efficiency.",
+        "module": "M103"
+      },
+      {
+        "_id": "L303",
+        "name": "Nozzle Optimization",
+        "description": "Optimizing nozzle design for specific applications.",
+        "module": "M103"
+      }
+    ]
+  },
+
+  {
+    "_id": "M201",
+    "name": "Fundamentals of Aerodynamics",
+    "description": "Basic aerodynamic concepts and fluid dynamics principles.",
+    "course": "RS102",
+    "lessons": [
+      {
+        "_id": "L4001",
+        "name": "Fluid Properties",
+        "description": "Density, viscosity, and compressibility.",
+        "module": "M201"
+      },
+      {
+        "_id": "L4002",
+        "name": "Continuity & Momentum",
+        "description": "Governing equations and assumptions.",
+        "module": "M201"
+      },
+      {
+        "_id": "L4003",
+        "name": "Lift and Drag",
+        "description": "Force generation mechanisms.",
+        "module": "M201"
+      }
+    ]
+  },
+  {
+    "_id": "M202",
+    "name": "Subsonic and Supersonic Flow",
+    "description": "Understanding subsonic and supersonic aerodynamic behaviors.",
+    "course": "RS102",
+    "lessons": [
+      {
+        "_id": "L4004",
+        "name": "Mach Number Regimes",
+        "description": "Flow regimes overview.",
+        "module": "M202"
+      },
+      {
+        "_id": "L4005",
+        "name": "Shock Waves",
+        "description": "Normal and oblique shocks.",
+        "module": "M202"
+      },
+      {
+        "_id": "L4006",
+        "name": "Expansion Fans",
+        "description": "Prandtl-Meyer expansions.",
+        "module": "M202"
+      }
+    ]
+  },
+  {
+    "_id": "M203",
+    "name": "Aerodynamic Heating",
+    "description": "Study of aerodynamic heating and thermal protection systems.",
+    "course": "RS102",
+    "lessons": [
+      {
+        "_id": "L4007",
+        "name": "Boundary Layers & Heat",
+        "description": "Thermal boundary layers.",
+        "module": "M203"
+      },
+      {
+        "_id": "L4008",
+        "name": "TPS Materials",
+        "description": "Ablative and reusable materials.",
+        "module": "M203"
+      },
+      {
+        "_id": "L4009",
+        "name": "Heating Estimation",
+        "description": "Empirical correlations.",
+        "module": "M203"
+      }
+    ]
+  },
+
+  {
+    "_id": "M301",
+    "name": "Spacecraft Structural Design",
+    "description": "Fundamentals of designing spacecraft structures and materials selection.",
+    "course": "RS103",
+    "lessons": [
+      {
+        "_id": "L5001",
+        "name": "Loads & Margins",
+        "description": "Launch and on-orbit loads.",
+        "module": "M301"
+      },
+      {
+        "_id": "L5002",
+        "name": "Materials for Space",
+        "description": "Composites and metals.",
+        "module": "M301"
+      },
+      {
+        "_id": "L5003",
+        "name": "Structural Analysis",
+        "description": "Sizing and verification.",
+        "module": "M301"
+      }
+    ]
+  },
+  {
+    "_id": "M302",
+    "name": "Orbital Mechanics",
+    "description": "Understanding orbital dynamics and mission planning.",
+    "course": "RS103",
+    "lessons": [
+      {
+        "_id": "L5004",
+        "name": "Two-Body Motion",
+        "description": "Conics and anomalies.",
+        "module": "M302"
+      },
+      {
+        "_id": "L5005",
+        "name": "Orbit Transfers",
+        "description": "Hohmann and bi-elliptic.",
+        "module": "M302"
+      },
+      {
+        "_id": "L5006",
+        "name": "Perturbations",
+        "description": "J2 and atmospheric drag.",
+        "module": "M302"
+      }
+    ]
+  },
+  {
+    "_id": "M303",
+    "name": "Spacecraft Systems Engineering",
+    "description": "Overview of spacecraft systems and subsystems engineering.",
+    "course": "RS103",
+    "lessons": [
+      {
+        "_id": "L5007",
+        "name": "Subsystems Overview",
+        "description": "ADCS, Power, Thermal, Comms.",
+        "module": "M303"
+      },
+      {
+        "_id": "L5008",
+        "name": "Requirements & V&V",
+        "description": "Flow-down and testing.",
+        "module": "M303"
+      },
+      {
+        "_id": "L5009",
+        "name": "Integration & Test",
+        "description": "AIT processes.",
+        "module": "M303"
+      }
+    ]
+  },
+
+  {
+    "_id": "M401",
+    "name": "Organic Structures",
+    "description": "Functional groups and stereochemistry.",
+    "course": "RS104",
+    "lessons": [
+      {
+        "_id": "L6001",
+        "name": "Functional Groups",
+        "description": "Recognizing groups.",
+        "module": "M401"
+      },
+      {
+        "_id": "L6002",
+        "name": "Isomerism",
+        "description": "Structural and stereo.",
+        "module": "M401"
+      },
+      {
+        "_id": "L6003",
+        "name": "Conformations",
+        "description": "Cyclohexane, etc.",
+        "module": "M401"
+      }
+    ]
+  },
+  {
+    "_id": "M402",
+    "name": "Reaction Mechanisms",
+    "description": "Nucleophilic/electrophilic reactions.",
+    "course": "RS104",
+    "lessons": [
+      {
+        "_id": "L6004",
+        "name": "SN1/SN2",
+        "description": "Substitution reactions.",
+        "module": "M402"
+      },
+      {
+        "_id": "L6005",
+        "name": "E1/E2",
+        "description": "Elimination reactions.",
+        "module": "M402"
+      },
+      {
+        "_id": "L6006",
+        "name": "Addition Reactions",
+        "description": "Across double bonds.",
+        "module": "M402"
+      }
+    ]
+  },
+  {
+    "_id": "M403",
+    "name": "Spectroscopy",
+    "description": "IR, NMR, and MS for structure.",
+    "course": "RS104",
+    "lessons": [
+      {
+        "_id": "L6007",
+        "name": "IR Basics",
+        "description": "Functional group ID.",
+        "module": "M403"
+      },
+      {
+        "_id": "L6008",
+        "name": "NMR Basics",
+        "description": "1H and 13C.",
+        "module": "M403"
+      },
+      {
+        "_id": "L6009",
+        "name": "Mass Spec",
+        "description": "Fragment patterns.",
+        "module": "M403"
+      }
+    ]
+  },
+
+  {
+    "_id": "M501",
+    "name": "Coordination Chemistry",
+    "description": "Ligands and complexes.",
+    "course": "RS105",
+    "lessons": [
+      {
+        "_id": "L7001",
+        "name": "Ligand Field",
+        "description": "Coordination numbers.",
+        "module": "M501"
+      },
+      {
+        "_id": "L7002",
+        "name": "Chelation",
+        "description": "Stability effects.",
+        "module": "M501"
+      },
+      {
+        "_id": "L7003",
+        "name": "Stereochemistry",
+        "description": "Geometries.",
+        "module": "M501"
+      }
+    ]
+  },
+  {
+    "_id": "M502",
+    "name": "Crystal Field Theory",
+    "description": "Electronic structure of complexes.",
+    "course": "RS105",
+    "lessons": [
+      {
+        "_id": "L7004",
+        "name": "d-Orbitals",
+        "description": "Splitting diagrams.",
+        "module": "M502"
+      },
+      {
+        "_id": "L7005",
+        "name": "High/Low Spin",
+        "description": "Magnetism.",
+        "module": "M502"
+      },
+      {
+        "_id": "L7006",
+        "name": "Spectrochemical Series",
+        "description": "Ligand strength.",
+        "module": "M502"
+      }
+    ]
+  },
+  {
+    "_id": "M503",
+    "name": "Organometallics",
+    "description": "Metal-carbon chemistry.",
+    "course": "RS105",
+    "lessons": [
+      {
+        "_id": "L7007",
+        "name": "Backbonding",
+        "description": "π-acid ligands.",
+        "module": "M503"
+      },
+      {
+        "_id": "L7008",
+        "name": "Catalysis",
+        "description": "Cross-coupling, etc.",
+        "module": "M503"
+      },
+      {
+        "_id": "L7009",
+        "name": "Oxidative Add/Reductive Elim",
+        "description": "Key steps.",
+        "module": "M503"
+      }
+    ]
+  },
+
+  {
+    "_id": "M601",
+    "name": "Thermodynamics",
+    "description": "State functions and equilibria.",
+    "course": "RS106",
+    "lessons": [
+      {
+        "_id": "L8001",
+        "name": "Laws of Thermodynamics",
+        "description": "Zeroth–Third.",
+        "module": "M601"
+      },
+      {
+        "_id": "L8002",
+        "name": "Chemical Potential",
+        "description": "Gibbs/Helmholtz.",
+        "module": "M601"
+      },
+      {
+        "_id": "L8003",
+        "name": "Phase Equilibria",
+        "description": "Phase rules.",
+        "module": "M601"
+      }
+    ]
+  },
+  {
+    "_id": "M602",
+    "name": "Kinetics",
+    "description": "Rates and mechanisms.",
+    "course": "RS106",
+    "lessons": [
+      {
+        "_id": "L8004",
+        "name": "Rate Laws",
+        "description": "Order and rate constants.",
+        "module": "M602"
+      },
+      {
+        "_id": "L8005",
+        "name": "Mechanisms",
+        "description": "Elementary steps.",
+        "module": "M602"
+      },
+      {
+        "_id": "L8006",
+        "name": "Catalysis",
+        "description": "Hetero/Homogeneous.",
+        "module": "M602"
+      }
+    ]
+  },
+  {
+    "_id": "M603",
+    "name": "Quantum & Spectroscopy",
+    "description": "QM foundations and spectra.",
+    "course": "RS106",
+    "lessons": [
+      {
+        "_id": "L8007",
+        "name": "Particle-in-a-Box",
+        "description": "Model systems.",
+        "module": "M603"
+      },
+      {
+        "_id": "L8008",
+        "name": "Molecular Orbitals",
+        "description": "Hückel & beyond.",
+        "module": "M603"
+      },
+      {
+        "_id": "L8009",
+        "name": "UV-Vis/IR/Raman",
+        "description": "Spectral analysis.",
+        "module": "M603"
+      }
+    ]
+  },
+
+  {
+    "_id": "M701",
+    "name": "Phonology & Morphology",
+    "description": "Sound systems and word forms.",
+    "course": "RS107",
+    "lessons": [
+      {
+        "_id": "L9001",
+        "name": "Phonemes",
+        "description": "Elvish examples.",
+        "module": "M701"
+      },
+      {
+        "_id": "L9002",
+        "name": "Allomorphy",
+        "description": "Morpheme variants.",
+        "module": "M701"
+      },
+      {
+        "_id": "L9003",
+        "name": "Syllable Structure",
+        "description": "Constraints.",
+        "module": "M701"
+      }
+    ]
+  },
+  {
+    "_id": "M702",
+    "name": "Writing Systems",
+    "description": "Tengwar, Cirth, runes.",
+    "course": "RS107",
+    "lessons": [
+      {
+        "_id": "L9004",
+        "name": "Tengwar",
+        "description": "Elvish script.",
+        "module": "M702"
+      },
+      {
+        "_id": "L9005",
+        "name": "Cirth",
+        "description": "Dwarvish runes.",
+        "module": "M702"
+      },
+      {
+        "_id": "L9006",
+        "name": "Black Speech",
+        "description": "Orthography.",
+        "module": "M702"
+      }
+    ]
+  },
+  {
+    "_id": "M703",
+    "name": "Epigraphy",
+    "description": "Inscriptions and contexts.",
+    "course": "RS107",
+    "lessons": [
+      {
+        "_id": "L9007",
+        "name": "Stone & Metal",
+        "description": "Media and tools.",
+        "module": "M703"
+      },
+      {
+        "_id": "L9008",
+        "name": "Chronology",
+        "description": "Dating methods.",
+        "module": "M703"
+      },
+      {
+        "_id": "L9009",
+        "name": "Interpretation",
+        "description": "Reading inscriptions.",
+        "module": "M703"
+      }
+    ]
+  },
+
+  {
+    "_id": "M801",
+    "name": "Diplomatic Foundations",
+    "description": "Alliances and councils.",
+    "course": "RS108",
+    "lessons": [
+      {
+        "_id": "L10001",
+        "name": "Council of Elrond",
+        "description": "Process & outcomes.",
+        "module": "M801"
+      },
+      {
+        "_id": "L10002",
+        "name": "Alliances",
+        "description": "Elves, Men, Dwarves.",
+        "module": "M801"
+      },
+      {
+        "_id": "L10003",
+        "name": "Protocols",
+        "description": "Etiquette & symbols.",
+        "module": "M801"
+      }
+    ]
+  },
+  {
+    "_id": "M802",
+    "name": "Conflict & Mediation",
+    "description": "Resolving inter-species disputes.",
+    "course": "RS108",
+    "lessons": [
+      {
+        "_id": "L10004",
+        "name": "Case Studies I",
+        "description": "Historic conflicts.",
+        "module": "M802"
+      },
+      {
+        "_id": "L10005",
+        "name": "Mediation Tools",
+        "description": "Frameworks & roles.",
+        "module": "M802"
+      },
+      {
+        "_id": "L10006",
+        "name": "Treaty Building",
+        "description": "Terms & enforcement.",
+        "module": "M802"
+      }
+    ]
+  },
+  {
+    "_id": "M803",
+    "name": "Field Diplomacy",
+    "description": "Ambassadors and missions.",
+    "course": "RS108",
+    "lessons": [
+      {
+        "_id": "L10007",
+        "name": "Envoys",
+        "description": "Selection & training.",
+        "module": "M803"
+      },
+      {
+        "_id": "L10008",
+        "name": "Cultural Competence",
+        "description": "Bridging gaps.",
+        "module": "M803"
+      },
+      {
+        "_id": "L10009",
+        "name": "Simulation",
+        "description": "Negotiation practice.",
+        "module": "M803"
+      }
+    ]
+  }
+]
