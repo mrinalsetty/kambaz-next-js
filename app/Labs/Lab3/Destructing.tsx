@@ -9,14 +9,16 @@ export default function Destructing() {
     <div id="wd-destructing">
       <h2>Destructing</h2>
       <h3>Object Destructing</h3>
-      const &#123; name, age &#125; = &#123; name: "John", age: 25 &#125;
+      const &#123; name, age &#125; = &#123; name: &quot;John&quot;, age: 25
+      &#125;
       <br />
       <br />
       name = {name}
       <br />
       age = {age}
       <h3>Array Destructing</h3>
-      const [first, second, third] = ["one","two","three"]
+      const [first, second, third] =
+      [&quot;one&quot;,&quot;two&quot;,&quot;three&quot;]
       <br />
       <br />
       first = {first}
