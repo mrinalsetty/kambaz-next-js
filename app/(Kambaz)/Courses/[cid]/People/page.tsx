@@ -1,1 +1,4 @@
-export { default } from "./Table/page";
+import PeopleTable from "./Table/page";
+export default function People() {
+  return <PeopleTable />;
+}

@@ -2,7 +2,7 @@
 import { AiOutlineDashboard } from "react-icons/ai";
 import { IoCalendarOutline } from "react-icons/io5";
 import { LiaBookSolid, LiaCogSolid } from "react-icons/lia";
-import { FaInbox, FaRegCircleUser, FaGithub, FaFlask } from "react-icons/fa6";
+import { FaInbox, FaRegCircleUser, FaGithub } from "react-icons/fa6";
 import { usePathname } from "next/navigation";
 import { ListGroup, ListGroupItem } from "react-bootstrap";
 import Link from "next/link";
@@ -12,7 +12,7 @@ export default function KambazNavigation() {
   const pathname = usePathname();
   const links = [
     { label: "Dashboard", path: "/Dashboard", icon: AiOutlineDashboard },
-    { label: "Courses", path: "/Dashboard", icon: LiaBookSolid },
+    { label: "Courses", path: "/Courses", icon: LiaBookSolid },
     { label: "Calendar", path: "/Calendar", icon: IoCalendarOutline },
     { label: "Inbox", path: "/Inbox", icon: FaInbox },
     { label: "Labs", path: "/Labs", icon: LiaCogSolid },
@@ -31,17 +31,22 @@ export default function KambazNavigation() {
         action
         className="bg-black border-0 text-center"
       >
-        <img src="/images/NEU.png" width="75px" />
+        <Image
+          src="/images/NEU.png"
+          width={75}
+          height={75}
+          alt="Northeastern University"
+        />
       </ListGroupItem>
+
       <ListGroupItem
         as={Link}
         href="/Account"
-        className={`text-center border-0 bg-black
-            ${
-              pathname.includes("Account")
-                ? "bg-white text-danger"
-                : "bg-black text-white"
-            }`}
+        className={`text-center border-0 bg-black ${
+          pathname.includes("Account")
+            ? "bg-white text-danger"
+            : "bg-black text-white"
+        }`}
       >
         <FaRegCircleUser
           className={`fs-1 ${
@@ -51,23 +56,35 @@ export default function KambazNavigation() {
         <br />
         Account
       </ListGroupItem>
+
       {links.map((link) => (
         <ListGroupItem
           key={`${link.label}-${link.path}`}
           as={Link}
           href={link.path}
-          className={`bg-black text-center border-0
-              ${
-                pathname.includes(link.label)
-                  ? "text-danger bg-white"
-                  : "text-white bg-black"
-              }`}
+          className={`bg-black text-center border-0 ${
+            pathname.includes(link.label)
+              ? "text-danger bg-white"
+              : "text-white bg-black"
+          }`}
         >
           {link.icon({ className: "fs-1 text-danger" })}
           <br />
           {link.label}
         </ListGroupItem>
       ))}
+
+      <ListGroupItem
+        as={Link}
+        href="https://github.com/mrinalsetty/kambaz-next-js"
+        id="wd-github-link"
+        target="_blank"
+        className="border-0 bg-black text-center text-white text-decoration-none"
+      >
+        <FaGithub className="fs-1 text-danger" />
+        <br />
+        GitHub
+      </ListGroupItem>
     </ListGroup>
   );
 }
