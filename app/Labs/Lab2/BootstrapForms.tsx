@@ -60,7 +60,7 @@ export default function BootstrapForms() {
       <div id="wd-css-styling-range-and-sliders">
         <h3>Range</h3>
         <FormLabel>Example range</FormLabel>
-        <Form.Control type="range" min="0" max="5" step="0.5" />
+        <Form.Range min={0} max={5} step={0.5} />
       </div>
       <div id="wd-css-styling-addons">
         <h3>Addons</h3>
