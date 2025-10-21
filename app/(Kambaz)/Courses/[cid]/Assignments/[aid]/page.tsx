@@ -1,6 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
+import Link from "next/link";
 import {
   Form,
   Row,
@@ -191,17 +192,21 @@ export default function AssignmentEditor() {
         <hr />
 
         <div className="d-flex justify-content-end gap-2">
-          <Button
+          <Link
             id="wd-cancel-assignment"
-            variant="light"
-            className="border"
+            href={`/Courses/${cid}/Assignments`}
+            className="btn btn-light border"
             style={{ borderColor: "#d0d7de" }}
           >
             Cancel
-          </Button>
-          <Button id="wd-save-assignment" variant="danger">
+          </Link>
+          <Link
+            id="wd-save-assignment"
+            href={`/Courses/${cid}/Assignments`}
+            className="btn btn-danger"
+          >
             Save
-          </Button>
+          </Link>
         </div>
       </Form>
     </div>
