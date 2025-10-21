@@ -20,6 +20,8 @@ type Assignment = {
   points?: number;
   availableText?: string;
   dueText?: string;
+  availableDate?: string;
+  dueDate?: string;
 };
 
 export default function AssignmentEditor() {
@@ -105,19 +107,6 @@ export default function AssignmentEditor() {
 
         <FormGroup as={Row} className="mb-3">
           <FormLabel column sm={3} className="text-end">
-            Display Grade as
-          </FormLabel>
-          <Col sm={9}>
-            <Form.Select defaultValue="Percentage">
-              <option value="Percentage">Percentage</option>
-              <option value="Grade Letter">Grade Letter</option>
-              <option value="GPA">GPA</option>
-            </Form.Select>
-          </Col>
-        </FormGroup>
-
-        <FormGroup as={Row} className="mb-3">
-          <FormLabel column sm={3} className="text-end">
             Submission Type
           </FormLabel>
           <Col sm={9}>
@@ -165,12 +154,14 @@ export default function AssignmentEditor() {
             <div className="p-3" style={boxStyle}>
               <div className="mb-1">Assign to</div>
               <FormControl defaultValue="Everyone" className="mb-3" />
+
               <div className="mb-1">Due</div>
               <FormControl
                 type="date"
-                defaultValue="2024-05-13"
+                defaultValue={a?.dueDate ?? "2024-05-13"}
                 className="mb-3"
               />
+
               <div className="row g-3">
                 <div className="col-6">
                   <FormLabel htmlFor="wd-available-from" className="mb-1">
@@ -179,7 +170,7 @@ export default function AssignmentEditor() {
                   <FormControl
                     id="wd-available-from"
                     type="date"
-                    defaultValue="2024-05-06"
+                    defaultValue={a?.availableDate ?? "2024-05-06"}
                   />
                 </div>
                 <div className="col-6">
@@ -189,7 +180,7 @@ export default function AssignmentEditor() {
                   <FormControl
                     id="wd-available-until"
                     type="date"
-                    defaultValue="2024-05-20"
+                    defaultValue={a?.dueDate ?? "2024-05-13"}
                   />
                 </div>
               </div>

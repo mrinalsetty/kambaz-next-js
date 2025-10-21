@@ -26,6 +26,8 @@ type Assignment = {
   availableText?: string;
   dueText?: string;
   points?: number;
+  availableDate?: string;
+  dueDate?: string;
 };
 
 export default function Assignments() {
@@ -88,7 +90,6 @@ export default function Assignments() {
           const groupItems = items.filter(
             (a) => (a.group || "").toUpperCase() === group
           );
-
           return (
             <ListGroupItem
               key={group}
@@ -151,11 +152,11 @@ export default function Assignments() {
                           {a.moduleTag ?? "Multiple Modules"}
                         </span>{" "}
                         {" | "}
-                        <b>Not available until</b> {a.availableText ?? "TBD"}{" "}
+                        <b>Not available until</b> {a.availableDate ?? "TBD"}{" "}
                         {" | "}
                       </div>
                       <div style={metaColor}>
-                        <b>Due</b> {a.dueText ?? "TBD"} {" | "} {a.points ?? 0}{" "}
+                        <b>Due</b> {a.dueDate ?? "TBD"} {" | "} {a.points ?? 0}{" "}
                         points
                       </div>
                     </div>
