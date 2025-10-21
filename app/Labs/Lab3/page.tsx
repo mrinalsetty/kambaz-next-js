@@ -44,6 +44,7 @@ export default function Lab3() {
       <TernaryOperator />
       <ConditionalOutputIfElse />
       <ConditionalOutputInline />
+      <hr />
       <LegacyFunctions />
       <ArrowFunctions />
       <ImpliedReturn />
