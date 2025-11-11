@@ -7,7 +7,6 @@ import type { RootState } from "../../../store";
 import {
   addAssignment,
   deleteAssignment,
-  editAssignment,
   updateAssignment,
 } from "../Assignments/reducer";
 import { ListGroup, ListGroupItem, FormControl } from "react-bootstrap";
@@ -67,7 +66,6 @@ export default function Assignments() {
         title: "New Assignment",
         course: cid,
         group: "ASSIGNMENTS",
-        points: 100,
         availableFrom: "",
         availableUntil: "",
         dueDate: "",
@@ -76,12 +74,11 @@ export default function Assignments() {
     router.push(`/Courses/${cid}/Assignments/${newId}`);
   };
 
-  const handleBeginEdit = (assignmentId: string) => {
-    dispatch(editAssignment(assignmentId));
-  };
-
   const handleDelete = (assignmentId: string) => {
-    if (window.confirm("Delete this assignment?")) {
+    if (
+      typeof window !== "undefined" &&
+      window.confirm("Delete this assignment?")
+    ) {
       dispatch(deleteAssignment(assignmentId));
     }
   };
@@ -174,6 +171,7 @@ export default function Assignments() {
                       className="me-3 d-flex align-items-center justify-content-center align-self-center"
                       style={{ width: 28 }}
                     >
+                      {/* file icon only (no pencil overlay) */}
                       <BsFileEarmarkText
                         className="text-success"
                         style={{ fontSize: 24 }}
@@ -181,6 +179,7 @@ export default function Assignments() {
                     </div>
 
                     <div className="flex-grow-1">
+                      {/* navigate to editor on title click */}
                       {!a.editing && (
                         <>
                           <Link
@@ -200,7 +199,7 @@ export default function Assignments() {
                           </div>
                           <div style={metaColor}>
                             <b>Due</b> {showOrTBD(a.dueDate)} {" | "}{" "}
-                            {a.points ?? 0} points
+                            {a.points ?? 100} points
                           </div>
                         </>
                       )}

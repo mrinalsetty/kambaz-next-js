@@ -32,9 +32,7 @@ const toISO = (s: string) => {
   const m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
   if (m) {
     const [, mm, dd, yyyy] = m;
-    const mm2 = mm.padStart(2, "0");
-    const dd2 = dd.padStart(2, "0");
-    return `${yyyy}-${mm2}-${dd2}`;
+    return `${yyyy}-${mm.padStart(2, "0")}-${dd.padStart(2, "0")}`;
   }
   const d = new Date(s);
   if (!isNaN(d.getTime())) {
@@ -61,8 +59,7 @@ export default function AssignmentEditor() {
     () => ({
       title: a?.title ?? "New Assignment",
       description:
-        a?.description ??
-        "Enter the assignment description and submission instructions.",
+        a?.description ?? "Assignment description and submission instructions.",
       points: a?.points ?? 100,
       dueDate: toISO(a?.dueDate ?? ""),
       availableFrom: toISO(a?.availableFrom ?? ""),
@@ -146,50 +143,41 @@ export default function AssignmentEditor() {
             <FormControl
               type="number"
               min={0}
-              value={Number.isNaN(points) ? 0 : points}
+              value={Number.isNaN(points) ? 100 : points}
               onChange={(e) => setPoints(parseInt(e.target.value || "0", 10))}
             />
           </Col>
         </FormGroup>
 
-        <FormGroup as={Row} className="mb-3">
-          <FormLabel column sm={3} className="text-end">
-            Assign
-          </FormLabel>
-          <Col sm={9}>
-            <div className="p-3" style={boxStyle}>
-              <div className="mb-3">
+        <FormGroup className="mb-3">
+          <div className="p-3" style={boxStyle}>
+            <div className="row g-3">
+              <div className="col-12">
                 <FormLabel className="mb-1">Due</FormLabel>
                 <FormControl
                   type="date"
                   value={dueDate}
-                  placeholder="mm/dd/yyyy"
                   onChange={(e) => setDueDate(e.target.value)}
                 />
               </div>
-
-              <Row className="g-3">
-                <Col sm={6}>
-                  <FormLabel className="mb-1">Available from</FormLabel>
-                  <FormControl
-                    type="date"
-                    value={availableFrom}
-                    placeholder="mm/dd/yyyy"
-                    onChange={(e) => setAvailableFrom(e.target.value)}
-                  />
-                </Col>
-                <Col sm={6}>
-                  <FormLabel className="mb-1">Until</FormLabel>
-                  <FormControl
-                    type="date"
-                    value={availableUntil}
-                    placeholder="mm/dd/yyyy"
-                    onChange={(e) => setAvailableUntil(e.target.value)}
-                  />
-                </Col>
-              </Row>
+              <div className="col-6">
+                <FormLabel className="mb-1">Available from</FormLabel>
+                <FormControl
+                  type="date"
+                  value={availableFrom}
+                  onChange={(e) => setAvailableFrom(e.target.value)}
+                />
+              </div>
+              <div className="col-6">
+                <FormLabel className="mb-1">Until</FormLabel>
+                <FormControl
+                  type="date"
+                  value={availableUntil}
+                  onChange={(e) => setAvailableUntil(e.target.value)}
+                />
+              </div>
             </div>
-          </Col>
+          </div>
         </FormGroup>
 
         <hr />

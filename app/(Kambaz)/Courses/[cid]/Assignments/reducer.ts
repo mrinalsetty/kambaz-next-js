@@ -13,15 +13,17 @@ const assignmentsSlice = createSlice({
   reducers: {
     addAssignment: (state, { payload: a }) => {
       const newAssignment: any = {
-        _id: a._id ?? uuidv4(), // <-- use provided id if present
+        _id: a._id ?? uuidv4(),
         title: a.title ?? "New Assignment",
         course: a.course,
         group: a.group ?? "ASSIGNMENTS",
         points: a.points ?? 100,
         description: a.description ?? "",
-        availableText: a.availableText ?? "TBD",
-        dueText: a.dueText ?? "TBD",
+        availableFrom: a.availableFrom ?? "",
+        availableUntil: a.availableUntil ?? "",
+        dueDate: a.dueDate ?? "",
         published: a.published ?? false,
+        editing: false,
       };
       state.assignments = [...state.assignments, newAssignment] as any;
     },
