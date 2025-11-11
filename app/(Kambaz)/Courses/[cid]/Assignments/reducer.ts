@@ -3,6 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 import { assignments } from "../../../Database";
 import { v4 as uuidv4 } from "uuid";
 
+const DEFAULT_DESC = "Assignment description and submission instructions.";
+
 const initialState = {
   assignments: assignments as any[],
 };
@@ -18,7 +20,9 @@ const assignmentsSlice = createSlice({
         course: a.course,
         group: a.group ?? "ASSIGNMENTS",
         points: a.points ?? 100,
-        description: a.description ?? "",
+        description:
+          (typeof a.description === "string" && a.description.trim()) ||
+          DEFAULT_DESC,
         availableFrom: a.availableFrom ?? "",
         availableUntil: a.availableUntil ?? "",
         dueDate: a.dueDate ?? "",

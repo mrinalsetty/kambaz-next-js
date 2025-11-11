@@ -26,6 +26,8 @@ type Assignment = {
   availableUntil?: string;
 };
 
+const DEFAULT_DESC = "Assignment description and submission instructions.";
+
 const toISO = (s: string) => {
   if (!s) return "";
   if (/\d{4}-\d{2}-\d{2}/.test(s)) return s.slice(0, 10);
@@ -58,8 +60,7 @@ export default function AssignmentEditor() {
   const init = useMemo(
     () => ({
       title: a?.title ?? "New Assignment",
-      description:
-        a?.description ?? "Assignment description and submission instructions.",
+      description: (a?.description && a.description.trim()) || DEFAULT_DESC,
       points: a?.points ?? 100,
       dueDate: toISO(a?.dueDate ?? ""),
       availableFrom: toISO(a?.availableFrom ?? ""),
