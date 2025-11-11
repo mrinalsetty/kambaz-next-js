@@ -37,7 +37,6 @@ export default function Dashboard() {
   );
 
   const { enrollments } = db as any;
-
   const dispatch = useDispatch();
 
   const [course, setCourse] = useState<any>({
@@ -50,14 +49,21 @@ export default function Dashboard() {
     description: "New Description",
   });
 
-  const visibleCourses =
-    currentUser && currentUser._id
-      ? courses.filter((c) =>
-          enrollments?.some(
-            (enr: any) => enr.user === currentUser._id && enr.course === c._id
-          )
-        )
-      : [];
+  const dbCourses = (db.courses as Course[]) ?? [];
+  const isEnrolled = (c: Course) =>
+    currentUser &&
+    currentUser._id &&
+    enrollments?.some(
+      (enr: any) => enr.user === currentUser._id && enr.course === c._id
+    );
+
+  const dbVisible = dbCourses.filter((c) => isEnrolled(c));
+  const newlyAdded = (courses ?? []).filter(
+    (c) => !dbCourses.some((d) => d._id === c._id)
+  );
+
+  const visibleCourses: Course[] = [...dbVisible, ...newlyAdded];
+
   return (
     <div id="wd-dashboard" style={{ marginLeft: 50 }}>
       <h1 id="wd-dashboard-title">Dashboard</h1>

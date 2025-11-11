@@ -25,6 +25,8 @@ const titleColor = { color: "#2b363dff" };
 const metaColor = { color: "#505b6aff" };
 const caretStyle = { fontSize: "0.9rem", color: "#2b363dff" };
 
+const showOrTBD = (v?: string) => (v && v.trim() ? v : "TBD");
+
 type Assignment = {
   _id: string;
   course: string;
@@ -66,6 +68,9 @@ export default function Assignments() {
         course: cid,
         group: "ASSIGNMENTS",
         points: 100,
+        availableFrom: "",
+        availableUntil: "",
+        dueDate: "",
       })
     );
     router.push(`/Courses/${cid}/Assignments/${newId}`);
@@ -191,10 +196,10 @@ export default function Assignments() {
                             </span>{" "}
                             {" | "}
                             <b>Not available until</b>{" "}
-                            {a.availableFrom ?? "TBD"} {" | "}
+                            {showOrTBD(a.availableFrom)} {" | "}
                           </div>
                           <div style={metaColor}>
-                            <b>Due</b> {a.dueDate ?? "TBD"} {" | "}{" "}
+                            <b>Due</b> {showOrTBD(a.dueDate)} {" | "}{" "}
                             {a.points ?? 0} points
                           </div>
                         </>
