@@ -152,35 +152,44 @@ export default function AssignmentEditor() {
           </Col>
         </FormGroup>
 
-        <FormGroup className="mb-3">
-          <div className="p-3" style={boxStyle}>
-            <div className="row g-3">
-              <div className="col-12">
+        <FormGroup as={Row} className="mb-3">
+          <FormLabel column sm={3} className="text-end">
+            Assign
+          </FormLabel>
+          <Col sm={9}>
+            <div className="p-3" style={boxStyle}>
+              <div className="mb-3">
                 <FormLabel className="mb-1">Due</FormLabel>
                 <FormControl
                   type="date"
                   value={dueDate}
+                  placeholder="mm/dd/yyyy"
                   onChange={(e) => setDueDate(e.target.value)}
                 />
               </div>
-              <div className="col-6">
-                <FormLabel className="mb-1">Available from</FormLabel>
-                <FormControl
-                  type="date"
-                  value={availableFrom}
-                  onChange={(e) => setAvailableFrom(e.target.value)}
-                />
-              </div>
-              <div className="col-6">
-                <FormLabel className="mb-1">Until</FormLabel>
-                <FormControl
-                  type="date"
-                  value={availableUntil}
-                  onChange={(e) => setAvailableUntil(e.target.value)}
-                />
-              </div>
+
+              <Row className="g-3">
+                <Col sm={6}>
+                  <FormLabel className="mb-1">Available from</FormLabel>
+                  <FormControl
+                    type="date"
+                    value={availableFrom}
+                    placeholder="mm/dd/yyyy"
+                    onChange={(e) => setAvailableFrom(e.target.value)}
+                  />
+                </Col>
+                <Col sm={6}>
+                  <FormLabel className="mb-1">Until</FormLabel>
+                  <FormControl
+                    type="date"
+                    value={availableUntil}
+                    placeholder="mm/dd/yyyy"
+                    onChange={(e) => setAvailableUntil(e.target.value)}
+                  />
+                </Col>
+              </Row>
             </div>
-          </div>
+          </Col>
         </FormGroup>
 
         <hr />
