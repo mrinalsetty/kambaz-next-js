@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import type { RootState } from "./ReduxExamples/store";
+import type { RootState } from "./store";
 import { ListGroup, ListGroupItem } from "react-bootstrap";
 
 export default function ArrayStateVariable() {
