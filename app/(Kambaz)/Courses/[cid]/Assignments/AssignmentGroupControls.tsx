@@ -1,3 +1,4 @@
+"use client";
 import { IoEllipsisVertical } from "react-icons/io5";
 import { BsPlus } from "react-icons/bs";
 
@@ -20,8 +21,18 @@ export default function AssignmentGroupControls({
       >
         {weight}
       </span>
-      <BsPlus className="me-3" style={{ fontSize: 22, color: "#2b363dff" }} />
-      <IoEllipsisVertical className="fs-5" style={{ color: "#505b6aff" }} />
+      <BsPlus
+        className="me-3"
+        style={{ fontSize: 22, color: "#2b363dff" }}
+        role="button"
+        title="Add item"
+      />
+      <IoEllipsisVertical
+        className="fs-5"
+        style={{ color: "#505b6aff" }}
+        role="button"
+        title="More"
+      />
     </div>
   );
 }

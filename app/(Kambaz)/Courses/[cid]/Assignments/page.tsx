@@ -1,17 +1,25 @@
 "use client";
+
 import Link from "next/link";
-import { useParams } from "next/navigation";
-import { ListGroup, ListGroupItem } from "react-bootstrap";
+import { useParams, useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState } from "../../../store";
+import {
+  addAssignment,
+  deleteAssignment,
+  editAssignment,
+  updateAssignment,
+} from "../Assignments/reducer";
+import { ListGroup, ListGroupItem, FormControl } from "react-bootstrap";
 import {
   BsGripVertical,
   BsCaretDownFill,
   BsFileEarmarkText,
-  BsPencil,
   BsSearch,
 } from "react-icons/bs";
+import { v4 as uuidv4 } from "uuid";
 import AssignmentRowControls from "./AssignmentRowControls";
 import AssignmentGroupControls from "./AssignmentGroupControls";
-import { assignments as assignmentsData } from "../../../Database";
 
 const titleColor = { color: "#2b363dff" };
 const metaColor = { color: "#505b6aff" };
@@ -23,14 +31,22 @@ type Assignment = {
   group: "ASSIGNMENTS" | "QUIZZES" | "EXAMS" | "PROJECTS" | string;
   title: string;
   moduleTag?: string;
-  availableText?: string;
-  dueText?: string;
+  availableFrom?: string;
+  availableUntil?: string;
+  dueDate?: string;
   points?: number;
+  editing?: boolean;
 };
 
 export default function Assignments() {
   const { cid } = useParams<{ cid: string }>();
-  const all: Assignment[] = (assignmentsData as unknown as Assignment[]) ?? [];
+  const router = useRouter();
+  const dispatch = useDispatch();
+
+  const all = useSelector(
+    (s: RootState) => s.assignmentsReducer.assignments
+  ) as Assignment[];
+
   const groups = ["ASSIGNMENTS", "QUIZZES", "EXAMS", "PROJECTS"] as const;
   const weights: Record<(typeof groups)[number], string> = {
     ASSIGNMENTS: "40% of Total",
@@ -38,7 +54,36 @@ export default function Assignments() {
     EXAMS: "20% of Total",
     PROJECTS: "30% of Total",
   };
-  const items = all.filter((a) => a.course === cid);
+
+  const items = (all ?? []).filter((a) => a.course === cid);
+
+  const addNew = () => {
+    const newId = uuidv4();
+    dispatch(
+      addAssignment({
+        _id: newId,
+        title: "New Assignment",
+        course: cid,
+        group: "ASSIGNMENTS",
+        points: 100,
+      })
+    );
+    router.push(`/Courses/${cid}/Assignments/${newId}`);
+  };
+
+  const handleBeginEdit = (assignmentId: string) => {
+    dispatch(editAssignment(assignmentId));
+  };
+
+  const handleDelete = (assignmentId: string) => {
+    if (window.confirm("Delete this assignment?")) {
+      dispatch(deleteAssignment(assignmentId));
+    }
+  };
+
+  const handleUpdate = (assignment: Assignment) => {
+    dispatch(updateAssignment(assignment));
+  };
 
   return (
     <div id="wd-assignments" className="p-3">
@@ -76,6 +121,7 @@ export default function Assignments() {
           </button>
           <button
             id="wd-assignments-add"
+            onClick={addNew}
             className="px-4 py-2 rounded bg-danger border border-danger text-white"
           >
             + Assignment
@@ -123,46 +169,58 @@ export default function Assignments() {
                       className="me-3 d-flex align-items-center justify-content-center align-self-center"
                       style={{ width: 28 }}
                     >
-                      <span
-                        className="position-relative d-inline-block"
-                        style={{ width: 24, height: 24 }}
-                      >
-                        <BsFileEarmarkText
-                          className="text-success"
-                          style={{ fontSize: 24 }}
-                        />
-                        <BsPencil
-                          className="text-success position-absolute"
-                          style={{ fontSize: 12, right: -2, bottom: -2 }}
-                        />
-                      </span>
+                      <BsFileEarmarkText
+                        className="text-success"
+                        style={{ fontSize: 24 }}
+                      />
                     </div>
 
                     <div className="flex-grow-1">
-                      <Link
-                        href={`/Courses/${cid}/Assignments/${a._id}`}
-                        className="wd-assignment-link fw-semibold text-decoration-none"
-                        style={titleColor}
-                      >
-                        {a.title}
-                      </Link>
-                      <div style={metaColor}>
-                        <span className="text-danger">
-                          {a.moduleTag ?? "Multiple Modules"}
-                        </span>{" "}
-                        {" | "}
-                        <b>Not available until</b> {a.availableText ?? "TBD"}{" "}
-                        {" | "}
-                      </div>
-                      <div style={metaColor}>
-                        <b>Due</b> {a.dueText ?? "TBD"} {" | "} {a.points ?? 0}{" "}
-                        points
-                      </div>
+                      {!a.editing && (
+                        <>
+                          <Link
+                            href={`/Courses/${cid}/Assignments/${a._id}`}
+                            className="wd-assignment-link fw-semibold text-decoration-none"
+                            style={titleColor}
+                          >
+                            {a.title}
+                          </Link>
+                          <div style={metaColor}>
+                            <span className="text-danger">
+                              {a.moduleTag ?? "Multiple Modules"}
+                            </span>{" "}
+                            {" | "}
+                            <b>Not available until</b>{" "}
+                            {a.availableFrom ?? "TBD"} {" | "}
+                          </div>
+                          <div style={metaColor}>
+                            <b>Due</b> {a.dueDate ?? "TBD"} {" | "}{" "}
+                            {a.points ?? 0} points
+                          </div>
+                        </>
+                      )}
+
+                      {a.editing && (
+                        <FormControl
+                          className="w-50 d-inline-block"
+                          autoFocus
+                          defaultValue={a.title}
+                          onChange={(e) =>
+                            handleUpdate({ ...a, title: e.target.value })
+                          }
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              handleUpdate({ ...a, editing: false });
+                            }
+                          }}
+                        />
+                      )}
                     </div>
 
-                    <div className="ms-auto d-inline-flex align-items-center align-self-center">
-                      <AssignmentRowControls />
-                    </div>
+                    <AssignmentRowControls
+                      assignmentId={a._id}
+                      onDelete={handleDelete}
+                    />
                   </ListGroupItem>
                 ))}
               </ListGroup>

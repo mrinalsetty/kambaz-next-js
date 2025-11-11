@@ -1,6 +1,8 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState } from "../../../../store";
 import {
   Form,
   Row,
@@ -10,23 +12,104 @@ import {
   FormLabel,
   FormControl,
 } from "react-bootstrap";
-import { assignments } from "../../../../Database";
+import { useMemo, useState } from "react";
+import { updateAssignment } from "../../Assignments/reducer";
 
 type Assignment = {
   _id: string;
   course: string;
-  group?: "ASSIGNMENTS" | "QUIZZES" | "EXAMS" | "PROJECTS" | string;
   title?: string;
+  description?: string;
   points?: number;
-  availableText?: string;
-  dueText?: string;
+  dueDate?: string;
+  availableFrom?: string;
+  availableUntil?: string;
+};
+
+const toISO = (s: string) => {
+  if (!s) return "";
+  if (/\d{4}-\d{2}-\d{2}/.test(s)) return s.slice(0, 10);
+  const m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (m) {
+    const [, mm, dd, yyyy] = m;
+    const mm2 = mm.padStart(2, "0");
+    const dd2 = dd.padStart(2, "0");
+    return `${yyyy}-${mm2}-${dd2}`;
+  }
+  const d = new Date(s);
+  if (!isNaN(d.getTime())) {
+    const mm = String(d.getMonth() + 1).padStart(2, "0");
+    const dd = String(d.getDate()).padStart(2, "0");
+    const yyyy = d.getFullYear();
+    return `${yyyy}-${mm}-${dd}`;
+  }
+  return "";
 };
 
 export default function AssignmentEditor() {
+  const router = useRouter();
   const { cid, aid } = useParams<{ cid: string; aid: string }>();
-  const a = (assignments as Assignment[]).find(
-    (x) => x._id === aid && x.course === cid
+  const dispatch = useDispatch();
+
+  const a = useSelector((s: RootState) =>
+    s.assignmentsReducer.assignments.find(
+      (x: Assignment) => x._id === aid && x.course === cid
+    )
+  ) as Assignment | undefined;
+
+  const init = useMemo(
+    () => ({
+      title: a?.title ?? "New Assignment",
+      description:
+        a?.description ??
+        "Enter the assignment description and submission instructions.",
+      points: a?.points ?? 100,
+      dueDate: toISO(a?.dueDate ?? ""),
+      availableFrom: toISO(a?.availableFrom ?? ""),
+      availableUntil: toISO(a?.availableUntil ?? ""),
+    }),
+    [a]
   );
+
+  const [title, setTitle] = useState(init.title);
+  const [description, setDescription] = useState(init.description);
+  const [points, setPoints] = useState<number>(init.points);
+  const [dueDate, setDueDate] = useState(init.dueDate);
+  const [availableFrom, setAvailableFrom] = useState(init.availableFrom);
+  const [availableUntil, setAvailableUntil] = useState(init.availableUntil);
+
+  if (!a) {
+    return (
+      <div className="p-3">
+        <p className="text-danger mb-3">Assignment not found.</p>
+        <Button variant="secondary" onClick={() => router.back()}>
+          Go back
+        </Button>
+      </div>
+    );
+  }
+
+  const handleSave = (e: React.MouseEvent) => {
+    e.preventDefault();
+    dispatch(
+      updateAssignment({
+        ...a,
+        title,
+        description,
+        points,
+        dueDate: toISO(dueDate),
+        availableFrom: toISO(availableFrom),
+        availableUntil: toISO(availableUntil),
+        editing: false,
+      })
+    );
+    router.back();
+  };
+
+  const handleCancel = (e: React.MouseEvent) => {
+    e.preventDefault();
+    router.back();
+  };
 
   const boxStyle: React.CSSProperties = {
     border: "1px solid #e5e7eb",
@@ -34,50 +117,25 @@ export default function AssignmentEditor() {
     backgroundColor: "#ffffff",
   };
 
-  const dottedRed: React.CSSProperties = {
-    color: "#2b363d",
-    textDecorationLine: "underline",
-    textDecorationStyle: "dotted",
-    textDecorationColor: "#dc2626",
-  };
-
   return (
     <div id="wd-assignments-editor" className="p-3" style={{ maxWidth: 720 }}>
       <Form>
         <FormGroup className="mb-3">
           <FormLabel className="fw-bold">Assignment Name</FormLabel>
-          <FormControl defaultValue={a?.title ?? "A1 - ENV + HTML"} />
+          <FormControl
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
         </FormGroup>
 
-        <FormGroup className="mb-4">
-          <div className="p-4" style={{ ...boxStyle }}>
-            <p className="mb-3" style={{ color: "#2b363d" }}>
-              The assignment is{" "}
-              <span className="text-danger">available online</span>
-            </p>
-
-            <p className="mb-3" style={{ color: "#2b363d" }}>
-              Submit a link to the landing page of your Web application running
-              on <span style={dottedRed}>Netlify</span>.
-            </p>
-
-            <p className="mb-2" style={{ color: "#2b363d" }}>
-              The landing page should include the following:
-            </p>
-            <ul className="mb-3" style={{ color: "#2b363d" }}>
-              <li>Your full name and section</li>
-              <li>Links to each of the lab assignments</li>
-              <li>
-                Link to the <span style={dottedRed}>Kanbas</span> application
-              </li>
-              <li>Links to all relevant source code repositories</li>
-            </ul>
-
-            <p className="mb-0" style={{ color: "#2b363d" }}>
-              The <span style={dottedRed}>Kanbas</span> application should
-              include a link to navigate back to the landing page.
-            </p>
-          </div>
+        <FormGroup className="mb-3">
+          <FormLabel className="fw-bold">Description</FormLabel>
+          <FormControl
+            as="textarea"
+            rows={5}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
         </FormGroup>
 
         <FormGroup as={Row} className="mb-3">
@@ -85,116 +143,44 @@ export default function AssignmentEditor() {
             Points
           </FormLabel>
           <Col sm={9}>
-            <FormControl type="number" defaultValue={a?.points ?? 100} />
+            <FormControl
+              type="number"
+              min={0}
+              value={Number.isNaN(points) ? 0 : points}
+              onChange={(e) => setPoints(parseInt(e.target.value || "0", 10))}
+            />
           </Col>
         </FormGroup>
 
-        <FormGroup as={Row} className="mb-3">
-          <FormLabel column sm={3} className="text-end">
-            Assignment Group
-          </FormLabel>
-          <Col sm={9}>
-            <Form.Select defaultValue={(a?.group as string) ?? "ASSIGNMENTS"}>
-              <option value="ASSIGNMENTS">ASSIGNMENTS</option>
-              <option value="QUIZZES">QUIZZES</option>
-              <option value="EXAMS">EXAMS</option>
-              <option value="PROJECTS">PROJECTS</option>
-            </Form.Select>
-          </Col>
-        </FormGroup>
-
-        <FormGroup as={Row} className="mb-3">
-          <FormLabel column sm={3} className="text-end">
-            Display Grade as
-          </FormLabel>
-          <Col sm={9}>
-            <Form.Select defaultValue="Percentage">
-              <option value="Percentage">Percentage</option>
-              <option value="Grade Letter">Grade Letter</option>
-              <option value="GPA">GPA</option>
-            </Form.Select>
-          </Col>
-        </FormGroup>
-
-        <FormGroup as={Row} className="mb-3">
-          <FormLabel column sm={3} className="text-end">
-            Submission Type
-          </FormLabel>
-          <Col sm={9}>
-            <div className="p-3" style={boxStyle}>
-              <Form.Select defaultValue="Online" className="mb-3">
-                <option value="Online">Online</option>
-                <option value="In Person">In Person</option>
-              </Form.Select>
-
-              <div className="mb-2 fw-semibold">Online Entry Options</div>
-              <Form.Check
-                id="wd-text-entry"
-                type="checkbox"
-                label="Text Entry"
-              />
-              <Form.Check
-                id="wd-website-url"
-                type="checkbox"
-                label="Website URL"
-              />
-              <Form.Check
-                id="wd-media-recordings"
-                type="checkbox"
-                label="Media Recordings"
-              />
-              <Form.Check
-                id="wd-student-annotation"
-                type="checkbox"
-                label="Student Annotation"
-              />
-              <Form.Check
-                id="wd-file-upload"
-                type="checkbox"
-                label="File Upload"
-              />
-            </div>
-          </Col>
-        </FormGroup>
-
-        <FormGroup as={Row} className="mb-3">
-          <FormLabel column sm={3} className="text-end">
-            Assign
-          </FormLabel>
-          <Col sm={9}>
-            <div className="p-3" style={boxStyle}>
-              <div className="mb-1">Assign to</div>
-              <FormControl defaultValue="Everyone" className="mb-3" />
-              <div className="mb-1">Due</div>
-              <FormControl
-                type="date"
-                defaultValue="2024-05-13"
-                className="mb-3"
-              />
-              <div className="row g-3">
-                <div className="col-6">
-                  <FormLabel htmlFor="wd-available-from" className="mb-1">
-                    Available from
-                  </FormLabel>
-                  <FormControl
-                    id="wd-available-from"
-                    type="date"
-                    defaultValue="2024-05-06"
-                  />
-                </div>
-                <div className="col-6">
-                  <FormLabel htmlFor="wd-available-until" className="mb-1">
-                    Until
-                  </FormLabel>
-                  <FormControl
-                    id="wd-available-until"
-                    type="date"
-                    defaultValue="2024-05-20"
-                  />
-                </div>
+        <FormGroup className="mb-3">
+          <div className="p-3" style={boxStyle}>
+            <div className="row g-3">
+              <div className="col-12">
+                <FormLabel className="mb-1">Due</FormLabel>
+                <FormControl
+                  type="date"
+                  value={dueDate}
+                  onChange={(e) => setDueDate(e.target.value)}
+                />
+              </div>
+              <div className="col-6">
+                <FormLabel className="mb-1">Available from</FormLabel>
+                <FormControl
+                  type="date"
+                  value={availableFrom}
+                  onChange={(e) => setAvailableFrom(e.target.value)}
+                />
+              </div>
+              <div className="col-6">
+                <FormLabel className="mb-1">Until</FormLabel>
+                <FormControl
+                  type="date"
+                  value={availableUntil}
+                  onChange={(e) => setAvailableUntil(e.target.value)}
+                />
               </div>
             </div>
-          </Col>
+          </div>
         </FormGroup>
 
         <hr />
@@ -204,11 +190,11 @@ export default function AssignmentEditor() {
             id="wd-cancel-assignment"
             variant="light"
             className="border"
-            style={{ borderColor: "#d0d7de" }}
+            onClick={handleCancel}
           >
             Cancel
           </Button>
-          <Button id="wd-save-assignment" variant="danger">
+          <Button id="wd-save-assignment" variant="danger" onClick={handleSave}>
             Save
           </Button>
         </div>

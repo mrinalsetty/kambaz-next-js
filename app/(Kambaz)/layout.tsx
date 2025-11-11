@@ -1,6 +1,9 @@
+import "bootstrap/dist/css/bootstrap.min.css";
 import { ReactNode } from "react";
 import KambazNavigation from "./Navigation";
 import "./styles.css";
+import Providers from "./providers";
+
 export default function KambazLayout({
   children,
 }: Readonly<{ children: ReactNode }>) {
@@ -10,7 +13,9 @@ export default function KambazLayout({
         <div>
           <KambazNavigation />
         </div>
-        <div className="wd-main-content-offset p-3 flex-fill">{children}</div>
+        <div className="wd-main-content-offset p-3 flex-fill">
+          <Providers>{children}</Providers>
+        </div>
       </div>
     </div>
   );
