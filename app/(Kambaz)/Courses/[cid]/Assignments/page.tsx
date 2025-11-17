@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../../store";
@@ -8,7 +9,9 @@ import {
   addAssignment,
   deleteAssignment,
   updateAssignment,
+  setAssignments,
 } from "../Assignments/reducer";
+import * as coursesClient from "../../client";
 import { ListGroup, ListGroupItem, FormControl } from "react-bootstrap";
 import {
   BsGripVertical,
@@ -58,34 +61,42 @@ export default function Assignments() {
 
   const items = (all ?? []).filter((a) => a.course === cid);
 
-  const addNew = () => {
-    const newId = uuidv4();
-    dispatch(
-      addAssignment({
-        _id: newId,
+  const addNew = async () => {
+    if (!cid) return;
+    const created = await coursesClient.createAssignmentForCourse(
+      cid,
+      {
         title: "New Assignment",
         course: cid,
         group: "ASSIGNMENTS",
-        availableFrom: "",
-        availableUntil: "",
-        dueDate: "",
-      })
+      }
     );
-    router.push(`/Courses/${cid}/Assignments/${newId}`);
+    dispatch(addAssignment(created));
+    router.push(`/Courses/${cid}/Assignments/${created._id}`);
   };
 
-  const handleDelete = (assignmentId: string) => {
+  const handleDelete = async (assignmentId: string) => {
     if (
       typeof window !== "undefined" &&
       window.confirm("Delete this assignment?")
     ) {
+      await coursesClient.deleteAssignment(assignmentId);
       dispatch(deleteAssignment(assignmentId));
     }
   };
 
-  const handleUpdate = (assignment: Assignment) => {
-    dispatch(updateAssignment(assignment));
+  const handleUpdate = async (assignment: Assignment) => {
+    const updated = await coursesClient.updateAssignment(assignment);
+    dispatch(updateAssignment(updated));
   };
+
+  // Load assignments for this course from server
+  useEffect(() => {
+    if (!cid) return;
+    coursesClient
+      .findAssignmentsForCourse(cid)
+      .then((as) => dispatch(setAssignments(as)));
+  }, [cid, dispatch]);
 
   return (
     <div id="wd-assignments" className="p-3">

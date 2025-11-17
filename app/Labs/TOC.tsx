@@ -70,6 +70,18 @@ export default function TOC() {
           My GitHub
         </NavLink>
       </NavItem>
+      <NavItem>
+        <NavLink href="https://github.com/mrinalsetty/kambaz-node-server-app">
+          Server Repo
+        </NavLink>
+      </NavItem>
+      <NavItem>
+        <NavLink
+          href={process.env.NEXT_PUBLIC_HTTP_SERVER || "http://localhost:4000"}
+        >
+          Server Root
+        </NavLink>
+      </NavItem>
     </Nav>
   );
 }

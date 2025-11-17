@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../store";
 import { setCurrentUser } from "../reducer";
+import * as client from "../client";
 import { redirect } from "next/dist/client/components/navigation";
 import { Form, FormControl } from "react-bootstrap";
 
@@ -34,9 +35,16 @@ export default function Profile() {
     setProfile(currentUser);
   }, [currentUser]);
 
-  const signout = () => {
+  const signout = async () => {
+    await client.signout();
     dispatch(setCurrentUser(null));
     redirect("/Account/Signin");
+  };
+  const updateProfile = async () => {
+    if (!profile) return;
+    const updated = await client.updateUser(profile);
+    dispatch(setCurrentUser(updated));
+    setProfile(updated);
   };
 
   if (!profile) return null;
@@ -110,6 +118,13 @@ export default function Profile() {
           <option value="STUDENT">Student</option>
         </Form.Select>
 
+        <button
+          id="wd-update-profile"
+          className="btn btn-primary w-100 mb-2"
+          onClick={updateProfile}
+        >
+          Update
+        </button>
         <button
           id="wd-signout-btn"
           className="btn btn-danger w-100"

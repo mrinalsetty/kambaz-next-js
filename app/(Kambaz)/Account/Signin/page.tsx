@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 import { useState } from "react";
 import { Button, Form, FormControl } from "react-bootstrap";
 import { setCurrentUser } from "../reducer";
-import * as db from "../../Database";
+import * as client from "../client";
 
 export default function Signin() {
   const dispatch = useDispatch();
@@ -18,16 +18,15 @@ export default function Signin() {
     password: "",
   });
 
-  const signin = () => {
-    const user = db.users.find(
-      (u: any) =>
-        u.username === credentials.username &&
-        u.password === credentials.password
-    );
-    if (!user) return;
-
-    dispatch(setCurrentUser(user));
-    router.push("/Dashboard");
+  const signin = async () => {
+    try {
+      const user = await client.signin(credentials);
+      if (!user) return;
+      dispatch(setCurrentUser(user));
+      router.push("/Dashboard");
+    } catch (e) {
+      // silent fail or add alert later
+    }
   };
 
   return (
