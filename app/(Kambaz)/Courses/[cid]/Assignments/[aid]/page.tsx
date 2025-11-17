@@ -14,7 +14,16 @@ import {
 } from "react-bootstrap";
 import { useMemo, useState } from "react";
 import { updateAssignment } from "../../Assignments/reducer";
-import type { Assignment } from "../../client";
+import type { Assignment as BaseAssignment } from "../../../client";
+
+type Assignment = BaseAssignment & {
+  description?: string;
+  points?: number;
+  dueDate?: string;
+  availableFrom?: string;
+  availableUntil?: string;
+  editing?: boolean;
+};
 
 const DEFAULT_DESC = "Assignment description and submission instructions.";
 
