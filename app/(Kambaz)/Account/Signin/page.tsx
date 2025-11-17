@@ -16,15 +16,21 @@ export default function Signin() {
     username: "",
     password: "",
   });
+  const [error, setError] = useState<string | null>(null);
 
   const signin = async () => {
     try {
       const user = await client.signin(credentials);
       if (!user) return;
+      setError(null);
       dispatch(setCurrentUser(user));
       router.push("/Dashboard");
-    } catch {
-      // silent fail or add alert later
+    } catch (e: unknown) {
+      let message = "Sign in failed";
+      if (e instanceof Error && e.message) {
+        message = e.message;
+      }
+      setError(message);
     }
   };
 
@@ -54,8 +60,15 @@ export default function Signin() {
           }
         />
 
+        {error && (
+          <div className="alert alert-danger py-2" role="alert">
+            {error}
+          </div>
+        )}
+
         <Button
           id="wd-signin-btn"
+          type="button"
           className="w-100 mb-2"
           onClick={signin}
           variant="primary"

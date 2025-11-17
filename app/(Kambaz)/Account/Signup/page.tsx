@@ -16,13 +16,26 @@ export default function Signup() {
     email?: string;
   }
   const [user, setUser] = useState<SignupUser>({ username: "", password: "" });
+  const [verify, setVerify] = useState("");
+  const [error, setError] = useState<string | null>(null);
   const dispatch = useDispatch();
   const signup = async () => {
+    if (user.password !== verify) {
+      setError("Passwords do not match");
+      return;
+    }
     try {
       const current = await client.signup(user);
-      if (current) dispatch(setCurrentUser(current));
-    } catch {
-      // handle error later
+      if (!current) {
+        setError("Signup failed");
+        return;
+      }
+      setError(null);
+      dispatch(setCurrentUser(current));
+    } catch (e: unknown) {
+      let message = "Signup failed";
+      if (e instanceof Error && e.message) message = e.message;
+      setError(message);
     }
   };
   return (
@@ -52,7 +65,15 @@ export default function Signup() {
           placeholder="verify password"
           type="password"
           className="mb-3"
+          value={verify}
+          onChange={(e) => setVerify(e.target.value)}
         />
+
+        {error && (
+          <div className="alert alert-danger py-2" role="alert">
+            {error}
+          </div>
+        )}
 
         <button
           id="wd-signup-btn"
