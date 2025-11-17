@@ -14,17 +14,7 @@ import {
 } from "react-bootstrap";
 import { useMemo, useState } from "react";
 import { updateAssignment } from "../../Assignments/reducer";
-
-type Assignment = {
-  _id: string;
-  course: string;
-  title?: string;
-  description?: string;
-  points?: number;
-  dueDate?: string;
-  availableFrom?: string;
-  availableUntil?: string;
-};
+import type { Assignment } from "../../client";
 
 const DEFAULT_DESC = "Assignment description and submission instructions.";
 
@@ -53,7 +43,7 @@ export default function AssignmentEditor() {
 
   const a = useSelector((s: RootState) =>
     s.assignmentsReducer.assignments.find(
-      (x: Assignment) => x._id === aid && x.course === cid
+      (x) => x._id === aid && x.course === cid
     )
   ) as Assignment | undefined;
 
