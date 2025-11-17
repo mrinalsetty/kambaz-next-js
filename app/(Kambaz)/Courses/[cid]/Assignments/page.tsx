@@ -63,14 +63,11 @@ export default function Assignments() {
 
   const addNew = async () => {
     if (!cid) return;
-    const created = await coursesClient.createAssignmentForCourse(
-      cid,
-      {
-        title: "New Assignment",
-        course: cid,
-        group: "ASSIGNMENTS",
-      }
-    );
+    const created = await coursesClient.createAssignmentForCourse(cid, {
+      title: "New Assignment",
+      course: cid,
+      group: "ASSIGNMENTS",
+    });
     dispatch(addAssignment(created));
     router.push(`/Courses/${cid}/Assignments/${created._id}`);
   };

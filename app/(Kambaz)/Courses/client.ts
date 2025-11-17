@@ -134,8 +134,6 @@ export const enrollInCourse = async (courseId: string): Promise<Enrollment> => {
   );
   return data as Enrollment;
 };
-export const unenrollFromCourse = async (
-  courseId: string
-): Promise<void> => {
+export const unenrollFromCourse = async (courseId: string): Promise<void> => {
   await axiosWithCredentials.delete(`${COURSES_API}/${courseId}/enroll`);
 };

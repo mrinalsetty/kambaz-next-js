@@ -101,7 +101,11 @@ export default function Modules() {
                   editModule={(moduleId) => {
                     // reference moduleId to satisfy lint and ensure correct id
                     dispatch(
-                      updateModuleLocal({ ...module, _id: moduleId, editing: true })
+                      updateModuleLocal({
+                        ...module,
+                        _id: moduleId,
+                        editing: true,
+                      })
                     );
                   }}
                 />
@@ -127,7 +131,11 @@ export default function Modules() {
 }
 
 // Fetch modules when cid changes
-export function ModulesFetcherWrapper({ children }: { children: React.ReactNode }) {
+export function ModulesFetcherWrapper({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return <>{children}</>;
 }
 

@@ -40,41 +40,50 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 ## Kambaz Full Stack Setup
 
 ### 1. Server (Express)
+
 Repository: `kambaz-node-server-app`
 
 Environment variables (see `.env` in server repo):
+
 ```
 PORT=4000
 SESSION_SECRET=your-secret
 CLIENT_URL=https://your-nextjs-domain.vercel.app
 SERVER_ENV=production # or development locally
 ```
+
 Deploy the server (Render/Railway/Fly.io/Heroku). Expose HTTPS URL.
 
 ### 2. Client (Next.js)
+
 Set `NEXT_PUBLIC_HTTP_SERVER` in Vercel Project Settings → Environment Variables to the deployed server base URL (e.g. `https://kambaz-server.onrender.com`). Redeploy.
 
 ### 3. CORS & Sessions
+
 Server uses `express-session` with conditional `sameSite:none` & `secure` when `SERVER_ENV` != development. Ensure your deployment platform sets `SERVER_ENV=production` and that you are serving over HTTPS so cookies work cross-site.
 
 ### 4. Authentication Flow
+
 `/api/users/signup` → create account
 `/api/users/signin` → establish session
 `/api/users/profile` → retrieve current user
 `/api/users/signout` → destroy session
 
 ### 5. Core API Endpoints
+
 Courses: `GET /api/courses`, `GET /api/users/current/courses`, `POST /api/users/current/courses`, `PUT /api/courses/:courseId`, `DELETE /api/courses/:courseId`
 Modules: `GET /api/courses/:courseId/modules`, `POST /api/courses/:courseId/modules`, `PUT /api/modules/:moduleId`, `DELETE /api/modules/:moduleId`
 Assignments: `GET /api/courses/:courseId/assignments`, `POST /api/courses/:courseId/assignments`, `PUT /api/assignments/:assignmentId`, `DELETE /api/assignments/:assignmentId`
 Enrollments: `GET /api/enrollments`, `GET /api/users/current/enrollments`, `POST /api/courses/:courseId/enroll`, `DELETE /api/courses/:courseId/enroll`
 
 ### 6. Local Development
+
 Client: `npm run dev` (port 3000)
 Server: `npm start` (port 4000) or `node index.js`
 Set `NEXT_PUBLIC_HTTP_SERVER=http://localhost:4000` in client `.env.local` for local development.
 
 ### 7. Deployment Checklist
+
 - Deploy server with env vars above
 - Confirm CORS allows client origin & credentials
 - Add client env var `NEXT_PUBLIC_HTTP_SERVER`
@@ -82,7 +91,7 @@ Set `NEXT_PUBLIC_HTTP_SERVER=http://localhost:4000` in client `.env.local` for l
 - Verify enroll/unenroll buttons and CRUD pages
 
 ### 8. Future Enhancements
+
 - People tab (list enrolled users per course)
 - Persist data in a database instead of in-memory arrays
 - Role-based permissions for editing/deleting courses
-

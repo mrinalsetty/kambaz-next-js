@@ -36,20 +36,35 @@ const assignmentsSlice = createSlice({
       } as Assignment & { published?: boolean; editing?: boolean };
       state.assignments = [...state.assignments, newAssignment];
     },
-    deleteAssignment: (state, { payload: assignmentId }: PayloadAction<string>) => {
-      state.assignments = state.assignments.filter((asmt) => asmt._id !== assignmentId);
+    deleteAssignment: (
+      state,
+      { payload: assignmentId }: PayloadAction<string>
+    ) => {
+      state.assignments = state.assignments.filter(
+        (asmt) => asmt._id !== assignmentId
+      );
     },
     updateAssignment: (state, { payload: a }: PayloadAction<Assignment>) => {
-      state.assignments = state.assignments.map((asmt) => (asmt._id === a._id ? a : asmt));
+      state.assignments = state.assignments.map((asmt) =>
+        asmt._id === a._id ? a : asmt
+      );
     },
-    editAssignment: (state, { payload: assignmentId }: PayloadAction<string>) => {
+    editAssignment: (
+      state,
+      { payload: assignmentId }: PayloadAction<string>
+    ) => {
       state.assignments = state.assignments.map((asmt) =>
         asmt._id === assignmentId ? { ...asmt, editing: true } : asmt
       );
     },
-    togglePublish: (state, { payload: assignmentId }: PayloadAction<string>) => {
+    togglePublish: (
+      state,
+      { payload: assignmentId }: PayloadAction<string>
+    ) => {
       state.assignments = state.assignments.map((asmt: any) =>
-        asmt._id === assignmentId ? { ...asmt, published: !asmt.published } : asmt
+        asmt._id === assignmentId
+          ? { ...asmt, published: !asmt.published }
+          : asmt
       );
     },
   },

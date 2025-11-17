@@ -4,8 +4,18 @@ import { useParams } from "next/navigation";
 import * as coursesClient from "../../Courses/client";
 import * as accountClient from "../../Account/client";
 
-interface User { _id: string; username: string; firstName?: string; lastName?: string; role?: string; }
-interface Enrollment { _id: string; user: string; course: string; }
+interface User {
+  _id: string;
+  username: string;
+  firstName?: string;
+  lastName?: string;
+  role?: string;
+}
+interface Enrollment {
+  _id: string;
+  user: string;
+  course: string;
+}
 
 export default function People() {
   const { cid } = useParams<{ cid: string }>();
@@ -18,12 +28,16 @@ export default function People() {
       accountClient.findAllUsers(),
       coursesClient.fetchMyEnrollments(), // current user's enrollments only
       // fetch all enrollments to list everyone
-      fetch(`${process.env.NEXT_PUBLIC_HTTP_SERVER}/api/enrollments`).then((r) => r.json()),
+      fetch(`${process.env.NEXT_PUBLIC_HTTP_SERVER}/api/enrollments`).then(
+        (r) => r.json()
+      ),
     ])
       .then(([allUsers, myEnrollments, allEnrollments]) => {
         setUsers(allUsers as User[]);
         // prefer all enrollments if available
-        setEnrollments((allEnrollments as Enrollment[]) || (myEnrollments as Enrollment[]));
+        setEnrollments(
+          (allEnrollments as Enrollment[]) || (myEnrollments as Enrollment[])
+        );
       })
       .catch(() => {});
   }, [cid]);

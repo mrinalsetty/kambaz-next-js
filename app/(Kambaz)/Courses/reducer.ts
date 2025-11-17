@@ -20,7 +20,9 @@ const coursesSlice = createSlice({
       state.courses = state.courses.filter((course) => course._id !== courseId);
     },
     updateCourse: (state, { payload: course }: PayloadAction<Course>) => {
-      state.courses = state.courses.map((c) => (c._id === course._id ? course : c));
+      state.courses = state.courses.map((c) =>
+        c._id === course._id ? course : c
+      );
     },
     setCourses: (state, { payload: courses }: PayloadAction<Course[]>) => {
       state.courses = courses;
