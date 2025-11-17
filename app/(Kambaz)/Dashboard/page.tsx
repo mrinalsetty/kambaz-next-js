@@ -33,6 +33,8 @@ export default function Dashboard() {
   const currentUser = useSelector(
     (state: RootState) => state.accountReducer.currentUser
   );
+  const role = currentUser?.role ?? "STUDENT";
+  const isInstructor = role === "FACULTY" || role === "TA";
 
   const [allCourses, setAllCourses] = useState<Course[]>([]);
   const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
@@ -47,7 +49,8 @@ export default function Dashboard() {
     description: "New Description",
   });
 
-  const visibleCourses: Course[] = allCourses;
+  const visibleCourses: Course[] =
+    role === "STUDENT" ? enrolledCourses : allCourses;
 
   const loadData = useCallback(async () => {
     if (!currentUser) return;
@@ -124,38 +127,42 @@ export default function Dashboard() {
     <div id="wd-dashboard" style={{ marginLeft: 50 }}>
       <h1 id="wd-dashboard-title">Dashboard</h1>
       <hr />
-      <h5>
-        New Course
-        <button
-          className="btn btn-primary float-end"
-          id="wd-add-new-course-click"
-          onClick={createCourse}
-        >
-          Add
-        </button>
-        <button
-          className="btn btn-warning float-end me-2"
-          onClick={performUpdateCourse}
-          id="wd-update-course-click"
-        >
-          Update
-        </button>
-      </h5>
-      <br />
-
-      <FormControl
-        value={course.name}
-        className="mb-2"
-        onChange={(e) => setCourse({ ...course, name: e.target.value })}
-      />
-      <FormControl
-        as="textarea"
-        value={course.description}
-        rows={3}
-        onChange={(e) => setCourse({ ...course, description: e.target.value })}
-      />
-
-      <hr />
+      {isInstructor && (
+        <>
+          <h5>
+            New Course
+            <button
+              className="btn btn-primary float-end"
+              id="wd-add-new-course-click"
+              onClick={createCourse}
+            >
+              Add
+            </button>
+            <button
+              className="btn btn-warning float-end me-2"
+              onClick={performUpdateCourse}
+              id="wd-update-course-click"
+            >
+              Update
+            </button>
+          </h5>
+          <br />
+          <FormControl
+            value={course.name}
+            className="mb-2"
+            onChange={(e) => setCourse({ ...course, name: e.target.value })}
+          />
+          <FormControl
+            as="textarea"
+            value={course.description}
+            rows={3}
+            onChange={(e) =>
+              setCourse({ ...course, description: e.target.value })
+            }
+          />
+          <hr />
+        </>
+      )}
 
       <h2 id="wd-dashboard-published">
         Published Courses ({visibleCourses.length})
@@ -202,7 +209,7 @@ export default function Dashboard() {
                       <div className="d-flex align-items-center">
                         <Button variant="primary">Go</Button>
 
-                        {isEnrolled(course._id!) && (
+                        {isEnrolled(course._id!) && isInstructor && (
                           <>
                             <button
                               onClick={(event) => {
