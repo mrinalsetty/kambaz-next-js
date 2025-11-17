@@ -1,11 +1,28 @@
-import { IoEllipsisVertical } from "react-icons/io5";
-import GreenCheckmark from "./GreenCheckMark";
+"use client";
 
-export default function AssignmentRowControls() {
+import { FaTrash } from "react-icons/fa";
+import { IoEllipsisVertical } from "react-icons/io5";
+
+export default function AssignmentRowControls({
+  assignmentId,
+  onDelete,
+}: {
+  assignmentId: string;
+  onDelete: (id: string) => void;
+}) {
   return (
     <div className="d-inline-flex align-items-center">
-      <GreenCheckmark />
-      <IoEllipsisVertical className="fs-4 ms-3" />
+      <FaTrash
+        className="text-danger me-3"
+        role="button"
+        title="Delete"
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          onDelete(assignmentId);
+        }}
+      />
+      <IoEllipsisVertical className="fs-4" title="More" />
     </div>
   );
 }
