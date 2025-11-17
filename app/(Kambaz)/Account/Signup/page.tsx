@@ -8,13 +8,20 @@ import { setCurrentUser } from "../reducer";
 import * as client from "../client";
 
 export default function Signup() {
-  const [user, setUser] = useState<any>({});
+  interface SignupUser {
+    username: string;
+    password: string;
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+  }
+  const [user, setUser] = useState<SignupUser>({ username: "", password: "" });
   const dispatch = useDispatch();
   const signup = async () => {
     try {
       const current = await client.signup(user);
       if (current) dispatch(setCurrentUser(current));
-    } catch (e) {
+    } catch {
       // handle error later
     }
   };

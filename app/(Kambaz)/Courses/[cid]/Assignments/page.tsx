@@ -19,7 +19,6 @@ import {
   BsFileEarmarkText,
   BsSearch,
 } from "react-icons/bs";
-import { v4 as uuidv4 } from "uuid";
 import AssignmentRowControls from "./AssignmentRowControls";
 import AssignmentGroupControls from "./AssignmentGroupControls";
 

@@ -4,8 +4,17 @@ import type { Assignment } from "../../client";
 
 const DEFAULT_DESC = "Assignment description and submission instructions.";
 
+type AssignmentExt = Assignment & {
+  published?: boolean;
+  editing?: boolean;
+  points?: number;
+  description?: string;
+  availableFrom?: string;
+  availableUntil?: string;
+  dueDate?: string;
+};
 interface AssignmentsState {
-  assignments: Assignment[];
+  assignments: AssignmentExt[];
 }
 const initialState: AssignmentsState = {
   assignments: [],
@@ -18,8 +27,8 @@ const assignmentsSlice = createSlice({
     setAssignments: (state, { payload }: PayloadAction<Assignment[]>) => {
       state.assignments = payload;
     },
-    addAssignment: (state, { payload: a }: PayloadAction<Assignment>) => {
-      const newAssignment: Assignment = {
+    addAssignment: (state, { payload: a }: PayloadAction<AssignmentExt>) => {
+      const newAssignment: AssignmentExt = {
         _id: a._id ?? uuidv4(),
         title: a.title ?? "New Assignment",
         course: a.course,
@@ -31,9 +40,9 @@ const assignmentsSlice = createSlice({
         availableFrom: a.availableFrom ?? "",
         availableUntil: a.availableUntil ?? "",
         dueDate: a.dueDate ?? "",
-        published: (a as any).published ?? false,
+        published: a.published ?? false,
         editing: false,
-      } as Assignment & { published?: boolean; editing?: boolean };
+      };
       state.assignments = [...state.assignments, newAssignment];
     },
     deleteAssignment: (
@@ -44,7 +53,7 @@ const assignmentsSlice = createSlice({
         (asmt) => asmt._id !== assignmentId
       );
     },
-    updateAssignment: (state, { payload: a }: PayloadAction<Assignment>) => {
+    updateAssignment: (state, { payload: a }: PayloadAction<AssignmentExt>) => {
       state.assignments = state.assignments.map((asmt) =>
         asmt._id === a._id ? a : asmt
       );
@@ -61,7 +70,7 @@ const assignmentsSlice = createSlice({
       state,
       { payload: assignmentId }: PayloadAction<string>
     ) => {
-      state.assignments = state.assignments.map((asmt: any) =>
+      state.assignments = state.assignments.map((asmt) =>
         asmt._id === assignmentId
           ? { ...asmt, published: !asmt.published }
           : asmt

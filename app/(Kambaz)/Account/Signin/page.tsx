@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import Link from "next/link";
@@ -24,7 +23,7 @@ export default function Signin() {
       if (!user) return;
       dispatch(setCurrentUser(user));
       router.push("/Dashboard");
-    } catch (e) {
+    } catch {
       // silent fail or add alert later
     }
   };

@@ -32,13 +32,27 @@ export default function WorkingWithArraysAsynchronously() {
     setTodos(updated);
   };
 
+  const extractMessage = (err: unknown): string => {
+    if (
+      typeof err === "object" &&
+      err !== null &&
+      "response" in err &&
+      (err as { response?: { data?: { message?: string } } }).response
+    ) {
+      const resp = (err as { response?: { data?: { message?: string } } })
+        .response;
+      return resp?.data?.message ?? "Operation failed";
+    }
+    return "Operation failed";
+  };
+
   const deleteTodo = async (todo: Todo) => {
     try {
       await client.deleteTodo(todo);
       const newTodos = todos.filter((t) => t.id !== todo.id);
       setTodos(newTodos);
-    } catch (error: any) {
-      setErrorMessage(error?.response?.data?.message || "Delete failed");
+    } catch (error: unknown) {
+      setErrorMessage(extractMessage(error));
     }
   };
 
@@ -67,8 +81,8 @@ export default function WorkingWithArraysAsynchronously() {
       await client.updateTodo(todo);
       setTodos(todos.map((t) => (t.id === todo.id ? todo : t)));
       setErrorMessage(null);
-    } catch (error: any) {
-      setErrorMessage(error?.response?.data?.message || "Update failed");
+    } catch (error: unknown) {
+      setErrorMessage(extractMessage(error));
     }
   };
 

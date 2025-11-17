@@ -5,7 +5,6 @@ const COURSES_API = `${HTTP_SERVER}/api/courses`;
 const USERS_API = `${HTTP_SERVER}/api/users`;
 const MODULES_API = `${HTTP_SERVER}/api/modules`;
 const ASSIGNMENTS_API = `${HTTP_SERVER}/api/assignments`;
-const ENROLLMENTS_API = `${HTTP_SERVER}/api/enrollments`;
 
 // Types
 export interface Course {
