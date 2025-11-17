@@ -5,19 +5,11 @@ import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../store";
 import { setCurrentUser } from "../reducer";
 import * as client from "../client";
+import type { User } from "../client";
 import { redirect } from "next/dist/client/components/navigation";
 import { Form, FormControl } from "react-bootstrap";
 
-type User = {
-  _id: string;
-  username: string;
-  password: string;
-  firstName?: string;
-  lastName?: string;
-  dob?: string;
-  email?: string;
-  role?: "USER" | "ADMIN" | "FACULTY" | "STUDENT";
-};
+// Use the shared User type from the account client (with optional fields)
 
 export default function Profile() {
   const dispatch = useDispatch();
