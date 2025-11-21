@@ -3,8 +3,7 @@
 import Link from "next/link";
 import { Form, FormControl } from "react-bootstrap";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { setCurrentUser } from "../reducer";
+import { useRouter } from "next/navigation";
 import * as client from "../client";
 
 export default function Signup() {
@@ -18,20 +17,20 @@ export default function Signup() {
   const [user, setUser] = useState<SignupUser>({ username: "", password: "" });
   const [verify, setVerify] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const dispatch = useDispatch();
+  const router = useRouter();
   const signup = async () => {
     if (user.password !== verify) {
       setError("Passwords do not match");
       return;
     }
     try {
-      const current = await client.signup(user);
-      if (!current) {
+      const created = await client.signup(user);
+      if (!created) {
         setError("Signup failed");
         return;
       }
       setError(null);
-      dispatch(setCurrentUser(current));
+      router.push("/Account/Signin");
     } catch (e: unknown) {
       let message = "Signup failed";
       if (e instanceof Error && e.message) message = e.message;

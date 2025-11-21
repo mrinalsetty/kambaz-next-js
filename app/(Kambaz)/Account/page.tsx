@@ -1,17 +1,23 @@
 "use client";
 
-import { redirect } from "next/dist/client/components/navigation";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import type { RootState } from "../store";
 
 export default function AccountPage() {
-  const currentUser = useSelector((state: RootState) => state.accountReducer);
+  const currentUser = useSelector(
+    (state: RootState) => state.accountReducer.currentUser
+  );
+  const router = useRouter();
 
-  if (!currentUser) {
-    redirect("/Account/Signin");
-  } else {
-    redirect("/Account/Profile");
-  }
+  useEffect(() => {
+    if (currentUser) {
+      router.replace("/Account/Profile");
+    } else {
+      router.replace("/Account/Signin");
+    }
+  }, [currentUser, router]);
 
   return null;
 }
