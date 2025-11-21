@@ -7,12 +7,36 @@ const DEFAULT_DESC = "Assignment description and submission instructions.";
 
 const initialState = {
   assignments: assignments as any[],
+  editorDrafts: {} as Record<string, any>,
 };
 
 const assignmentsSlice = createSlice({
   name: "assignments",
   initialState,
   reducers: {
+    initEditorDraft: (state, { payload: a }) => {
+      const id = a._id as string;
+      state.editorDrafts[id] = {
+        title: a.title ?? "New Assignment",
+        description:
+          (typeof a.description === "string" && a.description.trim()) ||
+          DEFAULT_DESC,
+        points: a.points ?? 100,
+        dueDate: a.dueDate ?? "",
+        availableFrom: a.availableFrom ?? "",
+        availableUntil: a.availableUntil ?? "",
+      } as any;
+    },
+    setEditorDraft: (state, { payload }) => {
+      const { _id, changes } = payload as { _id: string; changes: any };
+      state.editorDrafts[_id] = {
+        ...(state.editorDrafts[_id] || {}),
+        ...changes,
+      };
+    },
+    clearEditorDraft: (state, { payload: id }) => {
+      delete state.editorDrafts[id as string];
+    },
     addAssignment: (state, { payload: a }) => {
       const newAssignment: any = {
         _id: a._id ?? uuidv4(),
@@ -57,6 +81,9 @@ const assignmentsSlice = createSlice({
 });
 
 export const {
+  initEditorDraft,
+  setEditorDraft,
+  clearEditorDraft,
   addAssignment,
   deleteAssignment,
   updateAssignment,

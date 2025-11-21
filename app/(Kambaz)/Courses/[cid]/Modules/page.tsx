@@ -1,6 +1,4 @@
 "use client";
-
-import { useState } from "react";
 import { useParams } from "next/navigation";
 import { ListGroup, ListGroupItem, FormControl } from "react-bootstrap";
 import ModulesControls from "./ModulesControls";
@@ -11,7 +9,6 @@ import { BsGripVertical } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../../store";
 import {
-  addModule as addModuleAction,
   deleteModule as deleteModuleAction,
   updateModule as updateModuleAction,
   editModule as editModuleAction,
@@ -29,24 +26,25 @@ type Module = {
 export default function Modules() {
   const { cid } = useParams<{ cid: string }>();
 
-  const [moduleName, setModuleName] = useState<string>("");
-
   const modules = useSelector(
     (state: RootState) => state.modulesReducer.modules
   ) as Module[];
+  interface User {
+    _id: string;
+    username: string;
+    role: string;
+  }
+  const currentUser = useSelector(
+    (state: RootState) => state.accountReducer.currentUser as User | null
+  );
+  const canManage =
+    currentUser && ["FACULTY", "TA", "ADMIN"].includes(currentUser.role);
 
   const dispatch = useDispatch();
 
   return (
     <div>
-      <ModulesControls
-        moduleName={moduleName}
-        setModuleName={setModuleName}
-        addModule={() => {
-          dispatch(addModuleAction({ name: moduleName, course: cid }));
-          setModuleName("");
-        }}
-      />
+      <ModulesControls canManage={!!canManage} />
       <br />
       <br />
       <br />
@@ -82,15 +80,17 @@ export default function Modules() {
                   />
                 )}
 
-                <ModuleControlButtons
-                  moduleId={module._id}
-                  deleteModule={(moduleId) =>
-                    dispatch(deleteModuleAction(moduleId))
-                  }
-                  editModule={(moduleId) =>
-                    dispatch(editModuleAction(moduleId))
-                  }
-                />
+                {canManage && (
+                  <ModuleControlButtons
+                    moduleId={module._id}
+                    deleteModule={(moduleId) =>
+                      dispatch(deleteModuleAction(moduleId))
+                    }
+                    editModule={(moduleId) =>
+                      dispatch(editModuleAction(moduleId))
+                    }
+                  />
+                )}
               </div>
 
               <ListGroup className="wd-lessons rounded-0">
@@ -101,7 +101,7 @@ export default function Modules() {
                   >
                     <BsGripVertical className="me-2 fs-3" />
                     <span className="ms-4">{lesson.name}</span>
-                    <LessonControlButtons />
+                    {canManage && <LessonControlButtons />}
                   </ListGroupItem>
                 ))}
               </ListGroup>

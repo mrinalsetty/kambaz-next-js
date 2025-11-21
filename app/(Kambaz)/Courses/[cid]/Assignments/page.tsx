@@ -39,6 +39,12 @@ type Assignment = {
   editing?: boolean;
 };
 
+interface User {
+  _id: string;
+  username: string;
+  role: string;
+}
+
 export default function Assignments() {
   const { cid } = useParams<{ cid: string }>();
   const router = useRouter();
@@ -47,6 +53,11 @@ export default function Assignments() {
   const all = useSelector(
     (s: RootState) => s.assignmentsReducer.assignments
   ) as Assignment[];
+  const currentUser = useSelector(
+    (s: RootState) => s.accountReducer.currentUser as User | null
+  );
+  const canManage =
+    currentUser && ["FACULTY", "TA", "ADMIN"].includes(currentUser.role);
 
   const groups = ["ASSIGNMENTS", "QUIZZES", "EXAMS", "PROJECTS"] as const;
   const weights: Record<(typeof groups)[number], string> = {
@@ -114,21 +125,23 @@ export default function Assignments() {
           />
         </div>
 
-        <div className="ms-auto d-flex align-items-center gap-2">
-          <button
-            id="wd-assignments-add-group"
-            className="px-4 py-2 rounded bg-light border border-gray text-dark"
-          >
-            + Group
-          </button>
-          <button
-            id="wd-assignments-add"
-            onClick={addNew}
-            className="px-4 py-2 rounded bg-danger border border-danger text-white"
-          >
-            + Assignment
-          </button>
-        </div>
+        {canManage && (
+          <div className="ms-auto d-flex align-items-center gap-2">
+            <button
+              id="wd-assignments-add-group"
+              className="px-4 py-2 rounded bg-light border border-gray text-dark"
+            >
+              + Group
+            </button>
+            <button
+              id="wd-assignments-add"
+              onClick={addNew}
+              className="px-4 py-2 rounded bg-danger border border-danger text-white"
+            >
+              + Assignment
+            </button>
+          </div>
+        )}
       </div>
 
       <ListGroup className="rounded-0 mt-3" id="wd-assignments-groups">
@@ -152,7 +165,9 @@ export default function Assignments() {
                   style={caretStyle}
                 />
                 <b style={titleColor}>{group}</b>
-                <AssignmentGroupControls weight={weights[group]} />
+                {canManage && (
+                  <AssignmentGroupControls weight={weights[group]} />
+                )}
               </div>
 
               <ListGroup className="wd-lessons rounded-0">
@@ -179,16 +194,21 @@ export default function Assignments() {
                     </div>
 
                     <div className="flex-grow-1">
-                      {/* navigate to editor on title click */}
                       {!a.editing && (
                         <>
-                          <Link
-                            href={`/Courses/${cid}/Assignments/${a._id}`}
-                            className="wd-assignment-link fw-semibold text-decoration-none"
-                            style={titleColor}
-                          >
-                            {a.title}
-                          </Link>
+                          {canManage ? (
+                            <Link
+                              href={`/Courses/${cid}/Assignments/${a._id}`}
+                              className="wd-assignment-link fw-semibold text-decoration-none"
+                              style={titleColor}
+                            >
+                              {a.title}
+                            </Link>
+                          ) : (
+                            <span className="fw-semibold" style={titleColor}>
+                              {a.title}
+                            </span>
+                          )}
                           <div style={metaColor}>
                             <span className="text-danger">
                               {a.moduleTag ?? "Multiple Modules"}
@@ -221,10 +241,12 @@ export default function Assignments() {
                       )}
                     </div>
 
-                    <AssignmentRowControls
-                      assignmentId={a._id}
-                      onDelete={handleDelete}
-                    />
+                    {canManage && (
+                      <AssignmentRowControls
+                        assignmentId={a._id}
+                        onDelete={handleDelete}
+                      />
+                    )}
                   </ListGroupItem>
                 ))}
               </ListGroup>

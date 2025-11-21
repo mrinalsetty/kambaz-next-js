@@ -1,12 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-
-import { useState } from "react";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../store";
-import { addNewCourse, deleteCourse, updateCourse } from "../Courses/reducer";
-import { unenrollCourse } from "../Enrollments/reducer";
+import {
+  addNewCourse,
+  deleteCourse,
+  updateCourse,
+  setDashboardShowAll,
+  setCourseDraft,
+} from "../Courses/reducer";
+import { enrollCourse, unenrollCourse } from "../Enrollments/reducer";
 import {
   Row,
   Col,
@@ -42,15 +46,9 @@ export default function Dashboard() {
 
   const dispatch = useDispatch();
 
-  const [course, setCourse] = useState<any>({
-    _id: "0",
-    name: "New Course",
-    number: "New Number",
-    startDate: "2023-09-10",
-    endDate: "2023-12-15",
-    image: "/images/reactjs.jpg",
-    description: "New Description",
-  });
+  const courseDraft = useSelector(
+    (state: RootState) => (state as any).coursesReducer.courseDraft
+  );
 
   const isEnrolled = (c: Course) =>
     currentUser &&
@@ -59,19 +57,30 @@ export default function Dashboard() {
       (enr: any) => enr.user === currentUser._id && enr.course === c._id
     );
 
-  const enrolledCourses = (courses ?? []).filter((c) => isEnrolled(c));
-  const ownedCourses = (courses ?? []).filter(
-    (c) => canManage && !isEnrolled(c)
+  const showAll = useSelector(
+    (state: RootState) => (state as any).coursesReducer.dashboardShowAll
   );
-  const visibleCoursesMap: Record<string, Course> = {};
-  [...enrolledCourses, ...ownedCourses].forEach((c) => {
-    visibleCoursesMap[c._id] = c;
-  });
-  const visibleCourses: Course[] = Object.values(visibleCoursesMap);
+
+  const enrolledCourses = courses.filter((c) => isEnrolled(c));
+  const visibleCourses = showAll ? courses : enrolledCourses;
 
   return (
     <div id="wd-dashboard" style={{ marginLeft: 50 }}>
-      <h1 id="wd-dashboard-title">Dashboard</h1>
+      <h1
+        id="wd-dashboard-title"
+        className="d-flex justify-content-between align-items-center"
+      >
+        <span>Dashboard</span>
+        {currentUser && (
+          <button
+            id="wd-toggle-enrollments"
+            className="btn btn-primary"
+            onClick={() => dispatch(setDashboardShowAll(!showAll))}
+          >
+            {showAll ? "My Enrollments" : "Enrollments"}
+          </button>
+        )}
+      </h1>
       <hr />
       {canManage && (
         <>
@@ -80,14 +89,14 @@ export default function Dashboard() {
             <button
               className="btn btn-primary float-end"
               id="wd-add-new-course-click"
-              onClick={() => canManage && dispatch(addNewCourse(course))}
+              onClick={() => canManage && dispatch(addNewCourse(courseDraft))}
               disabled={!canManage}
             >
               Add
             </button>
             <button
               className="btn btn-warning float-end me-2"
-              onClick={() => canManage && dispatch(updateCourse(course))}
+              onClick={() => canManage && dispatch(updateCourse(courseDraft))}
               id="wd-update-course-click"
               disabled={!canManage}
             >
@@ -97,16 +106,16 @@ export default function Dashboard() {
           <br />
 
           <FormControl
-            value={course.name}
+            value={courseDraft.name}
             className="mb-2"
-            onChange={(e) => setCourse({ ...course, name: e.target.value })}
+            onChange={(e) => dispatch(setCourseDraft({ name: e.target.value }))}
           />
           <FormControl
             as="textarea"
-            value={course.description}
+            value={courseDraft.description}
             rows={3}
             onChange={(e) =>
-              setCourse({ ...course, description: e.target.value })
+              dispatch(setCourseDraft({ description: e.target.value }))
             }
           />
 
@@ -115,7 +124,7 @@ export default function Dashboard() {
       )}
 
       <h2 id="wd-dashboard-published">
-        Published Courses ({visibleCourses.length})
+        {showAll ? "All Courses" : "Enrolled Courses"} ({visibleCourses.length})
       </h2>
       <hr />
 
@@ -161,54 +170,76 @@ export default function Dashboard() {
                   <div className="d-flex align-items-center">
                     <Link
                       href={`/Courses/${course._id}/Home`}
-                      className="btn btn-primary"
+                      className="btn btn-primary me-2"
                     >
                       Go
                     </Link>
-                    {canManage && (
-                      <>
-                        <button
-                          type="button"
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            setCourse(course);
-                          }}
-                          className="btn btn-warning ms-auto me-2"
-                          id="wd-edit-course-click"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          type="button"
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            dispatch(deleteCourse(course._id));
-                          }}
-                          className="btn btn-danger me-2"
-                          id="wd-delete-course-click"
-                        >
-                          Delete
-                        </button>
-                      </>
-                    )}
-                    {currentUser?.role === "STUDENT" && isEnrolled(course) && (
-                      <button
-                        type="button"
-                        onClick={(event) => {
-                          event.stopPropagation();
-                          dispatch(
-                            unenrollCourse({
-                              user: currentUser._id,
-                              course: course._id,
-                            })
-                          );
-                        }}
-                        className="btn btn-danger ms-auto"
-                        id="wd-unenroll-course-click"
-                      >
-                        Unenroll
-                      </button>
-                    )}
+                    <div className="ms-auto d-flex align-items-center gap-2 pe-3">
+                      {canManage && (
+                        <>
+                          <button
+                            type="button"
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              dispatch(setCourseDraft(course));
+                            }}
+                            className="btn btn-warning"
+                            id="wd-edit-course-click"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            type="button"
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              dispatch(deleteCourse(course._id));
+                            }}
+                            className="btn btn-danger"
+                            id="wd-delete-course-click"
+                          >
+                            Delete
+                          </button>
+                        </>
+                      )}
+                      {currentUser &&
+                        (isEnrolled(course) ? (
+                          <button
+                            type="button"
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              dispatch(
+                                unenrollCourse({
+                                  user: currentUser._id,
+                                  course: course._id,
+                                })
+                              );
+                            }}
+                            className="btn btn-danger"
+                            id="wd-unenroll-course-click"
+                          >
+                            Unenroll
+                          </button>
+                        ) : (
+                          showAll && (
+                            <button
+                              type="button"
+                              onClick={(event) => {
+                                event.stopPropagation();
+                                dispatch(
+                                  enrollCourse({
+                                    user: currentUser._id,
+                                    course: course._id,
+                                  })
+                                );
+                              }}
+                              className="btn btn-success"
+                              id="wd-enroll-course-click"
+                            >
+                              Enroll
+                            </button>
+                          )
+                        ))}
+                    </div>
                   </div>
                 </CardBody>
               </Card>

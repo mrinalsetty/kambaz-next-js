@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
@@ -12,8 +13,13 @@ import {
   FormLabel,
   FormControl,
 } from "react-bootstrap";
-import { useMemo, useState } from "react";
-import { updateAssignment } from "../../Assignments/reducer";
+import {
+  updateAssignment,
+  initEditorDraft,
+  setEditorDraft,
+  clearEditorDraft,
+} from "../../Assignments/reducer";
+import { useEffect } from "react";
 
 type Assignment = {
   _id: string;
@@ -51,30 +57,53 @@ export default function AssignmentEditor() {
   const { cid, aid } = useParams<{ cid: string; aid: string }>();
   const dispatch = useDispatch();
 
+  const currentUser = useSelector(
+    (s: RootState) =>
+      s.accountReducer.currentUser as {
+        _id: string;
+        username: string;
+        role: string;
+      } | null
+  );
+  const canManage = !!(
+    currentUser && ["FACULTY", "TA", "ADMIN"].includes(currentUser.role)
+  );
+
   const a = useSelector((s: RootState) =>
     s.assignmentsReducer.assignments.find(
       (x: Assignment) => x._id === aid && x.course === cid
     )
   ) as Assignment | undefined;
 
-  const init = useMemo(
-    () => ({
-      title: a?.title ?? "New Assignment",
-      description: (a?.description && a.description.trim()) || DEFAULT_DESC,
-      points: a?.points ?? 100,
-      dueDate: toISO(a?.dueDate ?? ""),
-      availableFrom: toISO(a?.availableFrom ?? ""),
-      availableUntil: toISO(a?.availableUntil ?? ""),
-    }),
-    [a]
-  );
+  const draft = useSelector(
+    (s: RootState) => (s.assignmentsReducer as any).editorDrafts[aid]
+  ) as any;
 
-  const [title, setTitle] = useState(init.title);
-  const [description, setDescription] = useState(init.description);
-  const [points, setPoints] = useState<number>(init.points);
-  const [dueDate, setDueDate] = useState(init.dueDate);
-  const [availableFrom, setAvailableFrom] = useState(init.availableFrom);
-  const [availableUntil, setAvailableUntil] = useState(init.availableUntil);
+  useEffect(() => {
+    if (a && !draft) {
+      dispatch(
+        initEditorDraft({
+          _id: a._id,
+          title: a.title,
+          description: a.description,
+          points: a.points,
+          dueDate: toISO(a.dueDate ?? ""),
+          availableFrom: toISO(a.availableFrom ?? ""),
+          availableUntil: toISO(a.availableUntil ?? ""),
+        })
+      );
+    }
+  }, [a, draft, dispatch]);
+
+  useEffect(() => {
+    if (!canManage) {
+      router.replace(`/Courses/${cid}/Assignments`);
+    }
+  }, [canManage, router, cid]);
+
+  if (!canManage) {
+    return null;
+  }
 
   if (!a) {
     return (
@@ -89,23 +118,27 @@ export default function AssignmentEditor() {
 
   const handleSave = (e: React.MouseEvent) => {
     e.preventDefault();
-    dispatch(
-      updateAssignment({
-        ...a,
-        title,
-        description,
-        points,
-        dueDate: toISO(dueDate),
-        availableFrom: toISO(availableFrom),
-        availableUntil: toISO(availableUntil),
-        editing: false,
-      })
-    );
+    if (draft && a) {
+      dispatch(
+        updateAssignment({
+          ...a,
+          title: draft.title,
+          description: draft.description,
+          points: draft.points,
+          dueDate: toISO(draft.dueDate ?? ""),
+          availableFrom: toISO(draft.availableFrom ?? ""),
+          availableUntil: toISO(draft.availableUntil ?? ""),
+          editing: false,
+        })
+      );
+      dispatch(clearEditorDraft(a._id));
+    }
     router.back();
   };
 
   const handleCancel = (e: React.MouseEvent) => {
     e.preventDefault();
+    if (a) dispatch(clearEditorDraft(a._id));
     router.back();
   };
 
@@ -121,8 +154,12 @@ export default function AssignmentEditor() {
         <FormGroup className="mb-3">
           <FormLabel className="fw-bold">Assignment Name</FormLabel>
           <FormControl
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            value={draft?.title ?? ""}
+            onChange={(e) =>
+              dispatch(
+                setEditorDraft({ _id: aid, changes: { title: e.target.value } })
+              )
+            }
           />
         </FormGroup>
 
@@ -131,8 +168,15 @@ export default function AssignmentEditor() {
           <FormControl
             as="textarea"
             rows={5}
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            value={draft?.description ?? DEFAULT_DESC}
+            onChange={(e) =>
+              dispatch(
+                setEditorDraft({
+                  _id: aid,
+                  changes: { description: e.target.value },
+                })
+              )
+            }
           />
         </FormGroup>
 
@@ -144,8 +188,15 @@ export default function AssignmentEditor() {
             <FormControl
               type="number"
               min={0}
-              value={Number.isNaN(points) ? 100 : points}
-              onChange={(e) => setPoints(parseInt(e.target.value || "0", 10))}
+              value={Number.isNaN(draft?.points) ? 100 : draft?.points}
+              onChange={(e) =>
+                dispatch(
+                  setEditorDraft({
+                    _id: aid,
+                    changes: { points: parseInt(e.target.value || "0", 10) },
+                  })
+                )
+              }
             />
           </Col>
         </FormGroup>
@@ -157,24 +208,45 @@ export default function AssignmentEditor() {
                 <FormLabel className="mb-1">Due</FormLabel>
                 <FormControl
                   type="date"
-                  value={dueDate}
-                  onChange={(e) => setDueDate(e.target.value)}
+                  value={draft?.dueDate ?? ""}
+                  onChange={(e) =>
+                    dispatch(
+                      setEditorDraft({
+                        _id: aid,
+                        changes: { dueDate: e.target.value },
+                      })
+                    )
+                  }
                 />
               </div>
               <div className="col-6">
                 <FormLabel className="mb-1">Available from</FormLabel>
                 <FormControl
                   type="date"
-                  value={availableFrom}
-                  onChange={(e) => setAvailableFrom(e.target.value)}
+                  value={draft?.availableFrom ?? ""}
+                  onChange={(e) =>
+                    dispatch(
+                      setEditorDraft({
+                        _id: aid,
+                        changes: { availableFrom: e.target.value },
+                      })
+                    )
+                  }
                 />
               </div>
               <div className="col-6">
                 <FormLabel className="mb-1">Until</FormLabel>
                 <FormControl
                   type="date"
-                  value={availableUntil}
-                  onChange={(e) => setAvailableUntil(e.target.value)}
+                  value={draft?.availableUntil ?? ""}
+                  onChange={(e) =>
+                    dispatch(
+                      setEditorDraft({
+                        _id: aid,
+                        changes: { availableUntil: e.target.value },
+                      })
+                    )
+                  }
                 />
               </div>
             </div>
