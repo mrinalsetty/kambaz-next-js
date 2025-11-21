@@ -24,6 +24,7 @@ const assignmentsSlice = createSlice({
   name: "assignments",
   initialState,
   reducers: {
+    resetAssignments: () => initialState,
     setAssignments: (state, { payload }: PayloadAction<Assignment[]>) => {
       state.assignments = payload;
     },
@@ -80,6 +81,7 @@ const assignmentsSlice = createSlice({
 });
 
 export const {
+  resetAssignments,
   setAssignments,
   addAssignment,
   deleteAssignment,

@@ -10,6 +10,7 @@ const modulesSlice = createSlice({
   name: "modules",
   initialState,
   reducers: {
+    resetModules: () => initialState,
     setModules: (state, action: PayloadAction<Module[]>) => {
       state.modules = action.payload;
     },
@@ -20,5 +21,6 @@ const modulesSlice = createSlice({
     },
   },
 });
-export const { setModules, updateModuleLocal } = modulesSlice.actions;
+export const { resetModules, setModules, updateModuleLocal } =
+  modulesSlice.actions;
 export default modulesSlice.reducer;

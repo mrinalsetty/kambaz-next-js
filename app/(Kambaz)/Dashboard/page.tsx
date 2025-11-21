@@ -4,8 +4,13 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../store";
-import type { Enrollment, Course } from "../Courses/client";
-import { setCourses } from "../Courses/reducer";
+import type { Course } from "../Courses/client";
+import {
+  setCourses,
+  setAllCourses,
+  setEnrollments,
+  toggleViewMode,
+} from "../Courses/reducer";
 import * as client from "../Courses/client";
 import {
   Row,
@@ -19,7 +24,6 @@ import {
   FormControl,
 } from "react-bootstrap";
 
-// Additional fields used during local editing/creation (not required by interface)
 interface CourseForm extends Course {
   number?: string;
   startDate?: string;
@@ -27,17 +31,19 @@ interface CourseForm extends Course {
 }
 
 export default function Dashboard() {
-  const enrolledCourses = useSelector(
-    (state: RootState) => state.coursesReducer.courses
-  );
+  const coursesState = useSelector((state: RootState) => state.coursesReducer);
+  const {
+    courses: enrolledCourses,
+    allCourses,
+    enrollments,
+    viewMode,
+  } = coursesState;
   const currentUser = useSelector(
     (state: RootState) => state.accountReducer.currentUser
   );
   const role = currentUser?.role ?? "STUDENT";
   const isInstructor = role === "FACULTY" || role === "TA";
 
-  const [allCourses, setAllCourses] = useState<Course[]>([]);
-  const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
   const dispatch = useDispatch();
 
   const [course, setCourse] = useState<CourseForm>({
@@ -50,19 +56,21 @@ export default function Dashboard() {
   });
 
   const visibleCourses: Course[] =
-    role === "STUDENT" ? enrolledCourses : allCourses;
+    viewMode === "ENROLLED" ? enrolledCourses : allCourses;
 
   const loadData = useCallback(async () => {
     if (!currentUser) return;
     try {
-      const [all, myCourses, myEnrollments] = await Promise.all([
+      const [all, myEnrollments] = await Promise.all([
         client.fetchAllCourses(),
-        client.fetchMyCourses(),
         client.fetchMyEnrollments(),
       ]);
-      setAllCourses(all);
+      const myCourses = all.filter((c) =>
+        myEnrollments.some((e) => e.course === c._id)
+      );
+      dispatch(setAllCourses(all));
+      dispatch(setEnrollments(myEnrollments));
       dispatch(setCourses(myCourses));
-      setEnrollments(myEnrollments);
     } catch {
       // ignore errors
     }
@@ -86,7 +94,11 @@ export default function Dashboard() {
       description,
       image,
     });
-    setAllCourses(allCourses.map((c) => (c._id === updated._id ? updated : c)));
+    dispatch(
+      setAllCourses(
+        allCourses.map((c) => (c._id === updated._id ? updated : c))
+      )
+    );
     dispatch(
       setCourses(
         enrolledCourses.map((c) => (c._id === updated._id ? updated : c))
@@ -95,37 +107,52 @@ export default function Dashboard() {
   };
   const performDeleteCourse = async (courseId: string) => {
     await client.deleteCourse(courseId);
-    setAllCourses(allCourses.filter((c) => c._id !== courseId));
+    dispatch(setAllCourses(allCourses.filter((c) => c._id !== courseId)));
     dispatch(setCourses(enrolledCourses.filter((c) => c._id !== courseId)));
-    setEnrollments(enrollments.filter((e) => e.course !== courseId));
+    dispatch(setEnrollments(enrollments.filter((e) => e.course !== courseId)));
   };
 
   const isEnrolled = (courseId: string) =>
     enrollments.some((e) => e.course === courseId);
 
+  const refreshEnrollments = async () => {
+    const [all, myEnrollments] = await Promise.all([
+      client.fetchAllCourses(),
+      client.fetchMyEnrollments(),
+    ]);
+    const myCourses = all.filter((c) =>
+      myEnrollments.some((e) => e.course === c._id)
+    );
+    dispatch(setAllCourses(all));
+    dispatch(setEnrollments(myEnrollments));
+    dispatch(setCourses(myCourses));
+  };
   const enroll = async (courseId: string) => {
     await client.enrollInCourse(courseId);
-    const myEnrollments = await client.fetchMyEnrollments();
-    setEnrollments(myEnrollments);
-    const myCourses = await client.fetchMyCourses();
-    dispatch(setCourses(myCourses));
+    await refreshEnrollments();
   };
   const unenroll = async (courseId: string) => {
     await client.unenrollFromCourse(courseId);
-    const myEnrollments = await client.fetchMyEnrollments();
-    setEnrollments(myEnrollments);
-    const myCourses = await client.fetchMyCourses();
-    dispatch(setCourses(myCourses));
+    await refreshEnrollments();
   };
 
-  // load when user changes
   useEffect(() => {
     loadData();
   }, [loadData]);
 
   return (
     <div id="wd-dashboard" style={{ marginLeft: 50 }}>
-      <h1 id="wd-dashboard-title">Dashboard</h1>
+      <h1 id="wd-dashboard-title" className="d-flex align-items-center">
+        <span className="flex-grow-1">Dashboard</span>
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={() => dispatch(toggleViewMode())}
+          id="wd-enrollments-toggle"
+        >
+          {viewMode === "ENROLLED" ? "Enrollments" : "My Courses"}
+        </button>
+      </h1>
       <hr />
       {isInstructor && (
         <>

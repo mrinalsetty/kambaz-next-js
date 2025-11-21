@@ -1,28 +1,42 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { Table } from "react-bootstrap";
 import { FaUserCircle } from "react-icons/fa";
-import * as db from "../../../../Database";
+import * as coursesClient from "../../../client";
+import * as accountClient from "../../../../Account/client";
 
 type User = {
   _id: string;
-  firstName: string;
-  lastName: string;
-  loginId: string;
-  section: string;
-  role: string;
-  lastActivity: string;
-  totalActivity: string;
+  firstName?: string;
+  lastName?: string;
+  loginId?: string;
+  section?: string;
+  role?: string;
+  lastActivity?: string;
+  totalActivity?: string;
 };
 
 type Enrollment = { _id: string; user: string; course: string };
 
 export default function PeopleTable() {
   const { cid } = useParams<{ cid: string }>();
+  const [users, setUsers] = useState<User[]>([]);
+  const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
 
-  const users = (db.users as User[]) ?? [];
-  const enrollments = (db.enrollments as Enrollment[]) ?? [];
+  useEffect(() => {
+    if (!cid) return;
+    Promise.all([
+      accountClient.findAllUsers(),
+      coursesClient.findAllEnrollments(),
+    ])
+      .then(([allUsers, allEnrollments]) => {
+        setUsers((allUsers as User[]) ?? []);
+        setEnrollments((allEnrollments as Enrollment[]) ?? []);
+      })
+      .catch(() => {});
+  }, [cid]);
 
   const courseUsers = users.filter((u) =>
     enrollments.some((e) => e.user === u._id && e.course === cid)

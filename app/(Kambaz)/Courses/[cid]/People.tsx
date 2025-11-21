@@ -26,15 +26,11 @@ export default function People() {
     if (!cid) return;
     Promise.all([
       accountClient.findAllUsers(),
-      coursesClient.fetchMyEnrollments(), // current user's enrollments only
-      // fetch all enrollments to list everyone
-      fetch(`${process.env.NEXT_PUBLIC_HTTP_SERVER}/api/enrollments`).then(
-        (r) => r.json()
-      ),
+      coursesClient.fetchMyEnrollments(),
+      coursesClient.findAllEnrollments(),
     ])
       .then(([allUsers, myEnrollments, allEnrollments]) => {
         setUsers(allUsers as User[]);
-        // prefer all enrollments if available
         setEnrollments(
           (allEnrollments as Enrollment[]) || (myEnrollments as Enrollment[])
         );

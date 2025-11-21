@@ -29,10 +29,14 @@ export default function Modules() {
   const modules = useSelector(
     (state: RootState) => state.modulesReducer.modules
   ) as Module[];
+  const currentUser = useSelector(
+    (state: RootState) => state.accountReducer.currentUser
+  ) as { role?: string } | null;
+  const role = currentUser?.role ?? "STUDENT";
+  const isEditor = role === "FACULTY" || role === "TA" || role === "ADMIN";
 
   const dispatch = useDispatch();
 
-  // Load modules for this course id
   useLoadModules(cid, dispatch as AppDispatch);
 
   return (
@@ -66,7 +70,7 @@ export default function Modules() {
                 <BsGripVertical className="me-2 fs-3" />
 
                 {!module.editing && module.name}
-                {module.editing && (
+                {module.editing && isEditor && (
                   <FormControl
                     className="w-50 d-inline-block"
                     defaultValue={module.name}
@@ -77,7 +81,6 @@ export default function Modules() {
                     }
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
-                        // persist update
                         client
                           .updateModule({ ...module, editing: false })
                           .then((updated) => {

@@ -4,8 +4,10 @@ import { BsPlus } from "react-icons/bs";
 
 export default function AssignmentGroupControls({
   weight,
+  canEdit = false,
 }: {
   weight: string;
+  canEdit?: boolean;
 }) {
   return (
     <div className="float-end d-flex align-items-center">
@@ -21,12 +23,14 @@ export default function AssignmentGroupControls({
       >
         {weight}
       </span>
-      <BsPlus
-        className="me-3"
-        style={{ fontSize: 22, color: "#2b363dff" }}
-        role="button"
-        title="Add item"
-      />
+      {canEdit && (
+        <BsPlus
+          className="me-3"
+          style={{ fontSize: 22, color: "#2b363dff" }}
+          role="button"
+          title="Add item"
+        />
+      )}
       <IoEllipsisVertical
         className="fs-5"
         style={{ color: "#505b6aff" }}

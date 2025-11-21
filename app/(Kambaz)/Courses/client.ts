@@ -6,7 +6,6 @@ const USERS_API = `${HTTP_SERVER}/api/users`;
 const MODULES_API = `${HTTP_SERVER}/api/modules`;
 const ASSIGNMENTS_API = `${HTTP_SERVER}/api/assignments`;
 
-// Types
 export interface Course {
   _id?: string;
   name: string;
@@ -32,6 +31,11 @@ export interface Assignment {
   title: string;
   course: string;
   group?: string;
+  description?: string;
+  points?: number;
+  dueDate?: string;
+  availableFrom?: string;
+  availableUntil?: string;
 }
 export interface Enrollment {
   _id?: string;
@@ -39,7 +43,6 @@ export interface Enrollment {
   course: string;
 }
 
-// Courses
 export const fetchMyCourses = async (): Promise<Course[]> => {
   const { data } = await axiosWithCredentials.get(
     `${USERS_API}/current/courses`
@@ -58,14 +61,16 @@ export const createCourse = async (course: Course): Promise<Course> => {
   return data as Course;
 };
 export const updateCourse = async (course: Course): Promise<Course> => {
-  const { data } = await axios.put(`${COURSES_API}/${course._id}`, course);
+  const { data } = await axiosWithCredentials.put(
+    `${COURSES_API}/${course._id}`,
+    course
+  );
   return data as Course;
 };
 export const deleteCourse = async (courseId: string): Promise<void> => {
-  await axios.delete(`${COURSES_API}/${courseId}`);
+  await axiosWithCredentials.delete(`${COURSES_API}/${courseId}`);
 };
 
-// Modules
 export const findModulesForCourse = async (
   courseId: string
 ): Promise<Module[]> => {
@@ -76,21 +81,23 @@ export const createModuleForCourse = async (
   courseId: string,
   module: Module
 ): Promise<Module> => {
-  const { data } = await axios.post(
+  const { data } = await axiosWithCredentials.post(
     `${COURSES_API}/${courseId}/modules`,
     module
   );
   return data as Module;
 };
 export const deleteModule = async (moduleId: string): Promise<void> => {
-  await axios.delete(`${MODULES_API}/${moduleId}`);
+  await axiosWithCredentials.delete(`${MODULES_API}/${moduleId}`);
 };
 export const updateModule = async (module: Module): Promise<Module> => {
-  const { data } = await axios.put(`${MODULES_API}/${module._id}`, module);
+  const { data } = await axiosWithCredentials.put(
+    `${MODULES_API}/${module._id}`,
+    module
+  );
   return data as Module;
 };
 
-// Assignments (basic CRUD)
 export const findAssignmentsForCourse = async (
   courseId: string
 ): Promise<Assignment[]> => {
@@ -101,7 +108,7 @@ export const createAssignmentForCourse = async (
   courseId: string,
   assignment: Assignment
 ): Promise<Assignment> => {
-  const { data } = await axios.post(
+  const { data } = await axiosWithCredentials.post(
     `${COURSES_API}/${courseId}/assignments`,
     assignment
   );
@@ -110,17 +117,16 @@ export const createAssignmentForCourse = async (
 export const updateAssignment = async (
   assignment: Assignment
 ): Promise<Assignment> => {
-  const { data } = await axios.put(
+  const { data } = await axiosWithCredentials.put(
     `${ASSIGNMENTS_API}/${assignment._id}`,
     assignment
   );
   return data as Assignment;
 };
 export const deleteAssignment = async (assignmentId: string): Promise<void> => {
-  await axios.delete(`${ASSIGNMENTS_API}/${assignmentId}`);
+  await axiosWithCredentials.delete(`${ASSIGNMENTS_API}/${assignmentId}`);
 };
 
-// Enrollments
 export const fetchMyEnrollments = async (): Promise<Enrollment[]> => {
   const { data } = await axiosWithCredentials.get(
     `${USERS_API}/current/enrollments`
@@ -135,4 +141,11 @@ export const enrollInCourse = async (courseId: string): Promise<Enrollment> => {
 };
 export const unenrollFromCourse = async (courseId: string): Promise<void> => {
   await axiosWithCredentials.delete(`${COURSES_API}/${courseId}/enroll`);
+};
+
+export const findAllEnrollments = async (): Promise<Enrollment[]> => {
+  const { data } = await axiosWithCredentials.get(
+    `${HTTP_SERVER}/api/enrollments`
+  );
+  return data as Enrollment[];
 };

@@ -49,6 +49,11 @@ export default function Assignments() {
   const all = useSelector(
     (s: RootState) => s.assignmentsReducer.assignments
   ) as Assignment[];
+  const currentUser = useSelector(
+    (s: RootState) => s.accountReducer.currentUser
+  ) as { role?: string } | null;
+  const role = currentUser?.role ?? "STUDENT";
+  const isEditor = role === "FACULTY" || role === "TA" || role === "ADMIN";
 
   const groups = ["ASSIGNMENTS", "QUIZZES", "EXAMS", "PROJECTS"] as const;
   const weights: Record<(typeof groups)[number], string> = {
@@ -128,13 +133,15 @@ export default function Assignments() {
           >
             + Group
           </button>
-          <button
-            id="wd-assignments-add"
-            onClick={addNew}
-            className="px-4 py-2 rounded bg-danger border border-danger text-white"
-          >
-            + Assignment
-          </button>
+          {isEditor && (
+            <button
+              id="wd-assignments-add"
+              onClick={addNew}
+              className="px-4 py-2 rounded bg-danger border border-danger text-white"
+            >
+              + Assignment
+            </button>
+          )}
         </div>
       </div>
 
@@ -159,7 +166,10 @@ export default function Assignments() {
                   style={caretStyle}
                 />
                 <b style={titleColor}>{group}</b>
-                <AssignmentGroupControls weight={weights[group]} />
+                <AssignmentGroupControls
+                  weight={weights[group]}
+                  canEdit={isEditor}
+                />
               </div>
 
               <ListGroup className="wd-lessons rounded-0">
@@ -189,13 +199,19 @@ export default function Assignments() {
                       {/* navigate to editor on title click */}
                       {!a.editing && (
                         <>
-                          <Link
-                            href={`/Courses/${cid}/Assignments/${a._id}`}
-                            className="wd-assignment-link fw-semibold text-decoration-none"
-                            style={titleColor}
-                          >
-                            {a.title}
-                          </Link>
+                          {isEditor ? (
+                            <Link
+                              href={`/Courses/${cid}/Assignments/${a._id}`}
+                              className="wd-assignment-link fw-semibold text-decoration-none"
+                              style={titleColor}
+                            >
+                              {a.title}
+                            </Link>
+                          ) : (
+                            <span className="fw-semibold" style={titleColor}>
+                              {a.title}
+                            </span>
+                          )}
                           <div style={metaColor}>
                             <span className="text-danger">
                               {a.moduleTag ?? "Multiple Modules"}
@@ -228,10 +244,12 @@ export default function Assignments() {
                       )}
                     </div>
 
-                    <AssignmentRowControls
-                      assignmentId={a._id}
-                      onDelete={handleDelete}
-                    />
+                    {isEditor && (
+                      <AssignmentRowControls
+                        assignmentId={a._id}
+                        onDelete={handleDelete}
+                      />
+                    )}
                   </ListGroupItem>
                 ))}
               </ListGroup>
