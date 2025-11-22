@@ -42,7 +42,7 @@ export default function Dashboard() {
     (state: RootState) => state.accountReducer.currentUser
   );
   const role = currentUser?.role ?? "STUDENT";
-  const isInstructor = role === "FACULTY" || role === "TA";
+  const isInstructor = ["FACULTY", "TA", "ADMIN"].includes(role);
 
   const dispatch = useDispatch();
 
@@ -71,8 +71,8 @@ export default function Dashboard() {
       dispatch(setAllCourses(all));
       dispatch(setEnrollments(myEnrollments));
       dispatch(setCourses(myCourses));
-    } catch {
-      // ignore errors
+    } catch (e) {
+      console.error("Failed to load courses/enrollments", e);
     }
   }, [currentUser, dispatch]);
   const createCourse = async () => {
@@ -139,6 +139,18 @@ export default function Dashboard() {
   useEffect(() => {
     loadData();
   }, [loadData]);
+
+  if (!currentUser) {
+    return (
+      <div id="wd-dashboard-unauth" style={{ marginLeft: 50 }}>
+        <h1>Dashboard</h1>
+        <hr />
+        <p>
+          Please <Link href="/Account/Signin">sign in</Link> to view courses.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div id="wd-dashboard" style={{ marginLeft: 50 }}>
@@ -236,7 +248,7 @@ export default function Dashboard() {
                       <div className="d-flex align-items-center">
                         <Button variant="primary">Go</Button>
 
-                        {isEnrolled(course._id!) && isInstructor && (
+                        {isInstructor && (
                           <>
                             <button
                               onClick={(event) => {

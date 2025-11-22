@@ -91,7 +91,6 @@ export default function Assignments() {
     dispatch(updateAssignment(updated));
   };
 
-  // Load assignments for this course from server
   useEffect(() => {
     if (!cid) return;
     coursesClient

@@ -62,7 +62,6 @@ export default function AssignmentEditor() {
   const role = currentUser?.role ?? "STUDENT";
   const isEditor = role === "FACULTY" || role === "TA" || role === "ADMIN";
 
-  // Route-protect: students cannot access the editor page
   useEffect(() => {
     if (!isEditor && cid) {
       router.replace(`/Courses/${cid}/Assignments`);
