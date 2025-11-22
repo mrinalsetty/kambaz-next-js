@@ -18,77 +18,121 @@ export default function WorkingWithArraysAsynchronously() {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  // Load todos from server
   const fetchTodos = async () => {
-    const data = (await client.fetchTodos()) as Todo[];
-    setTodos(data);
+    try {
+      const data = (await client.fetchTodos()) as Todo[];
+      setTodos(data);
+      setErrorMessage(null);
+    } catch (err) {
+      setErrorMessage(
+        `Failed to load todos: ${err instanceof Error ? err.message : ""}`
+      );
+    }
   };
 
   useEffect(() => {
     fetchTodos();
   }, []);
 
-  const removeTodo = async (todo: Todo) => {
-    const updated = (await client.removeTodo(todo)) as Todo[];
-    setTodos(updated);
-  };
-
+  // Helper to extract backend error message
   const extractMessage = (err: unknown): string => {
     if (
       typeof err === "object" &&
       err !== null &&
       "response" in err &&
-      (err as { response?: { data?: { message?: string } } }).response
+      (err as { response?: { data?: { message?: string } } }).response?.data
+        ?.message
     ) {
-      const resp = (err as { response?: { data?: { message?: string } } })
-        .response;
-      return resp?.data?.message ?? "Operation failed";
+      return (err as { response: { data: { message: string } } }).response.data
+        .message;
     }
     return "Operation failed";
   };
 
-  const deleteTodo = async (todo: Todo) => {
+  // Old DELETE (GET) -> removeTodo
+  const removeTodo = async (todo: Todo) => {
     try {
-      await client.deleteTodo(todo);
-      const newTodos = todos.filter((t) => t.id !== todo.id);
-      setTodos(newTodos);
-    } catch (error: unknown) {
-      setErrorMessage(extractMessage(error));
+      const updated = (await client.removeTodo(todo)) as Todo[];
+      setTodos(updated);
+      setErrorMessage(null);
+    } catch (err) {
+      setErrorMessage(extractMessage(err));
     }
   };
 
+  // New DELETE (DELETE method) -> deleteTodo
+  const deleteTodo = async (todo: Todo) => {
+    try {
+      await client.deleteTodo(todo);
+      setTodos(todos.filter((t) => t.id !== todo.id)); // only remove if backend succeeds
+      setErrorMessage(null);
+    } catch (err) {
+      setErrorMessage(extractMessage(err));
+    }
+  };
+
+  // createNewTodo (GET /create)
   const createNewTodo = async () => {
-    const updated = (await client.createNewTodo()) as Todo[];
-    setTodos(updated);
+    try {
+      const updated = (await client.createNewTodo()) as Todo[];
+      setTodos(updated);
+      setErrorMessage(null);
+    } catch (err) {
+      setErrorMessage(extractMessage(err));
+    }
   };
 
+  // postNewTodo (POST new todo)
   const postNewTodo = async () => {
-    const newTodo = (await client.postNewTodo({
-      title: "New Posted Todo",
-      completed: false,
-    })) as Todo;
-    setTodos([...todos, newTodo]);
+    try {
+      const newTodo = await client.postNewTodo({
+        title: "New Posted Todo",
+        completed: false,
+      });
+      if (typeof newTodo.id === "number") {
+        // Cast to Todo type
+        setTodos([
+          ...todos,
+          {
+            id: newTodo.id,
+            title: newTodo.title ?? "",
+            completed: !!newTodo.completed,
+            description: newTodo.description,
+          },
+        ]);
+        setErrorMessage(null);
+      } else {
+        setErrorMessage("Failed to add todo: missing ID");
+      }
+    } catch (err) {
+      setErrorMessage(extractMessage(err));
+    }
   };
 
+  // Enable title editing
   const editTodo = (todo: Todo) => {
-    const updatedTodos = todos.map((t) =>
-      t.id === todo.id ? { ...todo, editing: true } : t
+    setTodos(
+      todos.map((t) => (t.id === todo.id ? { ...todo, editing: true } : t))
     );
-    setTodos(updatedTodos);
   };
 
+  // Update todo (PUT)
   const updateTodo = async (todo: Todo) => {
     try {
-      await client.updateTodo(todo);
-      setTodos(todos.map((t) => (t.id === todo.id ? todo : t)));
+      await client.updateTodo(todo); // backend updates
+      setTodos(todos.map((t) => (t.id === todo.id ? todo : t))); // UI updates
       setErrorMessage(null);
-    } catch (error: unknown) {
-      setErrorMessage(extractMessage(error));
+    } catch (err) {
+      setErrorMessage(extractMessage(err));
     }
   };
 
   return (
     <div id="wd-asynchronous-arrays">
       <h3>Working with Arrays Asynchronously</h3>
+
+      {/* Error alert */}
       {errorMessage && (
         <div
           id="wd-todo-error-message"
@@ -97,6 +141,7 @@ export default function WorkingWithArraysAsynchronously() {
           {errorMessage}
         </div>
       )}
+
       <h4>
         Todos
         <FaPlusCircle
@@ -110,23 +155,31 @@ export default function WorkingWithArraysAsynchronously() {
           id="wd-post-todo"
         />
       </h4>
+
       <ListGroup>
         {todos.map((todo) => (
           <ListGroupItem key={todo.id}>
+            {/* Remove using GET /delete */}
             <FaTrash
               onClick={() => removeTodo(todo)}
               className="text-danger float-end mt-1"
               id="wd-remove-todo"
             />
+
+            {/* Delete using DELETE method */}
             <TiDelete
               onClick={() => deleteTodo(todo)}
               className="text-danger float-end me-2 fs-3"
               id="wd-delete-todo"
             />
+
+            {/* Edit title */}
             <FaPencil
               onClick={() => editTodo(todo)}
               className="text-primary float-end me-2 mt-1"
             />
+
+            {/* Completed checkbox */}
             <input
               type="checkbox"
               defaultChecked={todo.completed}
@@ -135,6 +188,8 @@ export default function WorkingWithArraysAsynchronously() {
                 updateTodo({ ...todo, completed: e.target.checked })
               }
             />
+
+            {/* Title or input field */}
             {!todo.editing ? (
               <span
                 style={{
@@ -158,6 +213,7 @@ export default function WorkingWithArraysAsynchronously() {
           </ListGroupItem>
         ))}
       </ListGroup>
+
       <hr />
     </div>
   );

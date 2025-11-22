@@ -264,7 +264,7 @@ export default function Dashboard() {
                                   })
                                 );
                               }}
-                              className="btn btn-warning ms-auto me-2"
+                              className="btn btn-warning ms-2"
                               id="wd-edit-course-click"
                             >
                               Edit
@@ -274,7 +274,7 @@ export default function Dashboard() {
                                 event.preventDefault();
                                 performDeleteCourse(course._id!);
                               }}
-                              className="btn btn-danger"
+                              className="btn btn-danger ms-2"
                               id="wd-delete-course-click"
                             >
                               Delete
