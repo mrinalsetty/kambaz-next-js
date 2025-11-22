@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../store";
@@ -10,6 +10,9 @@ import {
   setAllCourses,
   setEnrollments,
   toggleViewMode,
+  setCourseDraftField,
+  setCourseDraft,
+  resetCourseDraft,
 } from "../Courses/reducer";
 import * as client from "../Courses/client";
 import {
@@ -24,11 +27,7 @@ import {
   FormControl,
 } from "react-bootstrap";
 
-interface CourseForm extends Course {
-  number?: string;
-  startDate?: string;
-  endDate?: string;
-}
+// Local interface no longer needed; Redux courseDraft holds editable fields
 
 export default function Dashboard() {
   const coursesState = useSelector((state: RootState) => state.coursesReducer);
@@ -46,14 +45,9 @@ export default function Dashboard() {
 
   const dispatch = useDispatch();
 
-  const [course, setCourse] = useState<CourseForm>({
-    name: "New Course",
-    number: "New Number",
-    startDate: "2023-09-10",
-    endDate: "2023-12-15",
-    image: "/images/reactjs.jpg",
-    description: "New Description",
-  });
+  const courseDraft = useSelector(
+    (state: RootState) => state.coursesReducer.courseDraft
+  );
 
   const visibleCourses: Course[] =
     viewMode === "ENROLLED" ? enrolledCourses : allCourses;
@@ -76,18 +70,14 @@ export default function Dashboard() {
     }
   }, [currentUser, dispatch]);
   const createCourse = async () => {
-    const { name, description, image } = course;
+    const { name, description, image } = courseDraft;
     await client.createCourse({ name, description, image });
     await loadData();
-    setCourse({
-      ...course,
-      name: "New Course",
-      description: "New Description",
-    });
+    dispatch(resetCourseDraft());
   };
   const performUpdateCourse = async () => {
-    if (!course._id) return;
-    const { _id, name, description, image } = course;
+    if (!courseDraft._id) return;
+    const { _id, name, description, image } = courseDraft;
     const updated = await client.updateCourse({
       _id,
       name,
@@ -104,6 +94,7 @@ export default function Dashboard() {
         enrolledCourses.map((c) => (c._id === updated._id ? updated : c))
       )
     );
+    dispatch(resetCourseDraft());
   };
   const performDeleteCourse = async (courseId: string) => {
     await client.deleteCourse(courseId);
@@ -174,6 +165,7 @@ export default function Dashboard() {
               className="btn btn-primary float-end"
               id="wd-add-new-course-click"
               onClick={createCourse}
+              disabled={!courseDraft.name.trim()}
             >
               Add
             </button>
@@ -187,16 +179,25 @@ export default function Dashboard() {
           </h5>
           <br />
           <FormControl
-            value={course.name}
+            value={courseDraft.name}
             className="mb-2"
-            onChange={(e) => setCourse({ ...course, name: e.target.value })}
+            onChange={(e) =>
+              dispatch(
+                setCourseDraftField({ field: "name", value: e.target.value })
+              )
+            }
           />
           <FormControl
             as="textarea"
-            value={course.description}
+            value={courseDraft.description}
             rows={3}
             onChange={(e) =>
-              setCourse({ ...course, description: e.target.value })
+              dispatch(
+                setCourseDraftField({
+                  field: "description",
+                  value: e.target.value,
+                })
+              )
             }
           />
           <hr />
@@ -253,7 +254,15 @@ export default function Dashboard() {
                             <button
                               onClick={(event) => {
                                 event.preventDefault();
-                                setCourse({ ...course });
+                                dispatch(
+                                  setCourseDraft({
+                                    _id: course._id!,
+                                    name: course.name || "",
+                                    description: course.description || "",
+                                    image:
+                                      course.image || "/images/reactjs.jpg",
+                                  })
+                                );
                               }}
                               className="btn btn-warning ms-auto me-2"
                               id="wd-edit-course-click"

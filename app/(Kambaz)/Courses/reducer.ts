@@ -2,17 +2,29 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { v4 as uuidv4 } from "uuid";
 import type { Course, Enrollment } from "./client";
 
+interface CourseDraft {
+  _id?: string;
+  name: string;
+  description: string;
+  image: string;
+}
 interface CoursesState {
   courses: Course[];
   allCourses: Course[];
   enrollments: Enrollment[];
   viewMode: "ENROLLED" | "ALL";
+  courseDraft: CourseDraft;
 }
 const initialState: CoursesState = {
   courses: [],
   allCourses: [],
   enrollments: [],
   viewMode: "ENROLLED",
+  courseDraft: {
+    name: "New Course",
+    description: "New Description",
+    image: "/images/reactjs.jpg",
+  },
 };
 const coursesSlice = createSlice({
   name: "courses",
@@ -43,6 +55,27 @@ const coursesSlice = createSlice({
     toggleViewMode: (state) => {
       state.viewMode = state.viewMode === "ENROLLED" ? "ALL" : "ENROLLED";
     },
+    setCourseDraftField: (
+      state,
+      { payload }: PayloadAction<{ field: keyof CourseDraft; value: string }>
+    ) => {
+      const { field, value } = payload;
+      if (field === "_id") return; // avoid overriding id here
+      // Narrow assignment without using any
+      if (field === "name") state.courseDraft.name = value;
+      else if (field === "description") state.courseDraft.description = value;
+      else if (field === "image") state.courseDraft.image = value;
+    },
+    setCourseDraft: (state, { payload }: PayloadAction<CourseDraft>) => {
+      state.courseDraft = payload;
+    },
+    resetCourseDraft: (state) => {
+      state.courseDraft = {
+        name: "New Course",
+        description: "New Description",
+        image: "/images/reactjs.jpg",
+      };
+    },
   },
 });
 export const {
@@ -54,5 +87,8 @@ export const {
   setAllCourses,
   setEnrollments,
   toggleViewMode,
+  setCourseDraftField,
+  setCourseDraft,
+  resetCourseDraft,
 } = coursesSlice.actions;
 export default coursesSlice.reducer;
