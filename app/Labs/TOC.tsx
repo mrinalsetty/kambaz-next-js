@@ -52,6 +52,15 @@ export default function TOC() {
         </NavLink>
       </NavItem>
       <NavItem>
+        <NavLink
+          href="/Labs/Lab5"
+          as={Link}
+          className={`nav-link ${pathname.endsWith("Lab5") ? "active" : ""}`}
+        >
+          Lab 5
+        </NavLink>
+      </NavItem>
+      <NavItem>
         <NavLink href="/" as={Link}>
           Kambaz
         </NavLink>
@@ -59,6 +68,18 @@ export default function TOC() {
       <NavItem>
         <NavLink href="https://github.com/mrinalsetty/kambaz-next-js">
           My GitHub
+        </NavLink>
+      </NavItem>
+      <NavItem>
+        <NavLink href="https://github.com/mrinalsetty/kambaz-node-server-app">
+          Server Repo
+        </NavLink>
+      </NavItem>
+      <NavItem>
+        <NavLink
+          href={process.env.NEXT_PUBLIC_HTTP_SERVER || "http://localhost:4000"}
+        >
+          Server Root
         </NavLink>
       </NavItem>
     </Nav>

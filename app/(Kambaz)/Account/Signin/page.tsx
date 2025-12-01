@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import Link from "next/link";
@@ -7,7 +6,7 @@ import { useDispatch } from "react-redux";
 import { useState } from "react";
 import { Button, Form, FormControl } from "react-bootstrap";
 import { setCurrentUser } from "../reducer";
-import * as db from "../../Database";
+import * as client from "../client";
 
 export default function Signin() {
   const dispatch = useDispatch();
@@ -17,17 +16,22 @@ export default function Signin() {
     username: "",
     password: "",
   });
+  const [error, setError] = useState<string | null>(null);
 
-  const signin = () => {
-    const user = db.users.find(
-      (u: any) =>
-        u.username === credentials.username &&
-        u.password === credentials.password
-    );
-    if (!user) return;
-
-    dispatch(setCurrentUser(user));
-    router.push("/Dashboard");
+  const signin = async () => {
+    try {
+      const user = await client.signin(credentials);
+      if (!user) return;
+      setError(null);
+      dispatch(setCurrentUser(user));
+      router.push("/Dashboard");
+    } catch (e: unknown) {
+      let message = "Sign in failed";
+      if (e instanceof Error && e.message) {
+        message = e.message;
+      }
+      setError(message);
+    }
   };
 
   return (
@@ -56,8 +60,15 @@ export default function Signin() {
           }
         />
 
+        {error && (
+          <div className="alert alert-danger py-2" role="alert">
+            {error}
+          </div>
+        )}
+
         <Button
           id="wd-signin-btn"
+          type="button"
           className="w-100 mb-2"
           onClick={signin}
           variant="primary"

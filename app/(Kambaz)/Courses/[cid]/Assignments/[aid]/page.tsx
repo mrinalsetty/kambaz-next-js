@@ -12,18 +12,18 @@ import {
   FormLabel,
   FormControl,
 } from "react-bootstrap";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { updateAssignment } from "../../Assignments/reducer";
+import * as coursesClient from "../../../client";
+import type { Assignment as BaseAssignment } from "../../../client";
 
-type Assignment = {
-  _id: string;
-  course: string;
-  title?: string;
+type Assignment = BaseAssignment & {
   description?: string;
   points?: number;
   dueDate?: string;
   availableFrom?: string;
   availableUntil?: string;
+  editing?: boolean;
 };
 
 const DEFAULT_DESC = "Assignment description and submission instructions.";
@@ -53,9 +53,20 @@ export default function AssignmentEditor() {
 
   const a = useSelector((s: RootState) =>
     s.assignmentsReducer.assignments.find(
-      (x: Assignment) => x._id === aid && x.course === cid
+      (x) => x._id === aid && x.course === cid
     )
   ) as Assignment | undefined;
+  const currentUser = useSelector(
+    (s: RootState) => s.accountReducer.currentUser
+  ) as { role?: string } | null;
+  const role = currentUser?.role ?? "STUDENT";
+  const isEditor = role === "FACULTY" || role === "TA" || role === "ADMIN";
+
+  useEffect(() => {
+    if (!isEditor && cid) {
+      router.replace(`/Courses/${cid}/Assignments`);
+    }
+  }, [isEditor, cid, router]);
 
   const init = useMemo(
     () => ({
@@ -87,20 +98,18 @@ export default function AssignmentEditor() {
     );
   }
 
-  const handleSave = (e: React.MouseEvent) => {
+  const handleSave = async (e: React.MouseEvent) => {
     e.preventDefault();
-    dispatch(
-      updateAssignment({
-        ...a,
-        title,
-        description,
-        points,
-        dueDate: toISO(dueDate),
-        availableFrom: toISO(availableFrom),
-        availableUntil: toISO(availableUntil),
-        editing: false,
-      })
-    );
+    const updated = await coursesClient.updateAssignment({
+      ...a,
+      title,
+      description,
+      points,
+      dueDate: toISO(dueDate),
+      availableFrom: toISO(availableFrom),
+      availableUntil: toISO(availableUntil),
+    });
+    dispatch(updateAssignment({ ...updated, editing: false }));
     router.back();
   };
 
@@ -115,6 +124,10 @@ export default function AssignmentEditor() {
     backgroundColor: "#ffffff",
   };
 
+  if (!isEditor) {
+    return null;
+  }
+
   return (
     <div id="wd-assignments-editor" className="p-3" style={{ maxWidth: 720 }}>
       <Form>
@@ -123,6 +136,7 @@ export default function AssignmentEditor() {
           <FormControl
             value={title}
             onChange={(e) => setTitle(e.target.value)}
+            readOnly={!isEditor}
           />
         </FormGroup>
 
@@ -133,6 +147,7 @@ export default function AssignmentEditor() {
             rows={5}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
+            readOnly={!isEditor}
           />
         </FormGroup>
 
@@ -146,6 +161,7 @@ export default function AssignmentEditor() {
               min={0}
               value={Number.isNaN(points) ? 100 : points}
               onChange={(e) => setPoints(parseInt(e.target.value || "0", 10))}
+              readOnly={!isEditor}
             />
           </Col>
         </FormGroup>
@@ -159,6 +175,7 @@ export default function AssignmentEditor() {
                   type="date"
                   value={dueDate}
                   onChange={(e) => setDueDate(e.target.value)}
+                  readOnly={!isEditor}
                 />
               </div>
               <div className="col-6">
@@ -167,6 +184,7 @@ export default function AssignmentEditor() {
                   type="date"
                   value={availableFrom}
                   onChange={(e) => setAvailableFrom(e.target.value)}
+                  readOnly={!isEditor}
                 />
               </div>
               <div className="col-6">
@@ -175,6 +193,7 @@ export default function AssignmentEditor() {
                   type="date"
                   value={availableUntil}
                   onChange={(e) => setAvailableUntil(e.target.value)}
+                  readOnly={!isEditor}
                 />
               </div>
             </div>
@@ -192,9 +211,15 @@ export default function AssignmentEditor() {
           >
             Cancel
           </Button>
-          <Button id="wd-save-assignment" variant="danger" onClick={handleSave}>
-            Save
-          </Button>
+          {isEditor && (
+            <Button
+              id="wd-save-assignment"
+              variant="danger"
+              onClick={handleSave}
+            >
+              Save
+            </Button>
+          )}
         </div>
       </Form>
     </div>

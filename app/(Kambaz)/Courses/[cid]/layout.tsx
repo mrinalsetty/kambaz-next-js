@@ -1,13 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CourseNavigation from "./Navigation";
 import { FaAlignJustify } from "react-icons/fa6";
 import Breadcrumb from "./BreadCrumb";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../store";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import * as client from "../client";
 
 export default function CoursesLayout({
   children,
@@ -16,12 +17,53 @@ export default function CoursesLayout({
 }) {
   const { cid } = useParams<{ cid: string }>();
 
-  const courses = useSelector(
-    (state: RootState) => state.coursesReducer.courses
+  const router = useRouter();
+  const { courses, enrollments, allCourses } = useSelector(
+    (state: RootState) => state.coursesReducer
   );
-  const course = courses.find((c: any) => c._id === cid);
+  const currentUser = useSelector(
+    (state: RootState) => state.accountReducer.currentUser
+  );
+  const role = currentUser?.role ?? "STUDENT";
+  const enrolled = enrollments.some((e) => e.course === cid);
+  const courseFromState =
+    (courses as any[]).find((c) => c._id === cid) ||
+    (allCourses as any[]).find((c) => c._id === cid);
+
+  const [resolvedCourseName, setResolvedCourseName] = useState<
+    string | undefined
+  >(courseFromState?.name);
 
   const [showNav, setShowNav] = useState(true);
+
+  useEffect(() => {
+    if (
+      typeof window !== "undefined" &&
+      cid &&
+      courseFromState &&
+      role === "STUDENT" &&
+      !enrolled
+    ) {
+      router.replace("/Dashboard");
+    }
+  }, [cid, courseFromState, role, enrolled, router]);
+
+  useEffect(() => {
+    if (courseFromState?.name) {
+      setResolvedCourseName(courseFromState.name);
+      return;
+    }
+    if (!cid) return;
+    client
+      .fetchAllCourses()
+      .then((all) => all.find((c) => c._id === cid))
+      .then((found) => setResolvedCourseName(found?.name))
+      .catch(() => {});
+  }, [cid, courseFromState]);
+
+  if (role === "STUDENT" && courseFromState && !enrolled) {
+    return null;
+  }
 
   return (
     <div id="wd-courses">
@@ -38,7 +80,11 @@ export default function CoursesLayout({
         </button>
 
         <span className="text-danger">
-          <Breadcrumb course={course} />
+          <Breadcrumb
+            course={
+              resolvedCourseName ? { name: resolvedCourseName } : undefined
+            }
+          />
         </span>
       </h2>
 

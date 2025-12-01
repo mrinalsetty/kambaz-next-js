@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../../store";
@@ -8,7 +9,9 @@ import {
   addAssignment,
   deleteAssignment,
   updateAssignment,
+  setAssignments,
 } from "../Assignments/reducer";
+import * as coursesClient from "../../client";
 import { ListGroup, ListGroupItem, FormControl } from "react-bootstrap";
 import {
   BsGripVertical,
@@ -16,7 +19,6 @@ import {
   BsFileEarmarkText,
   BsSearch,
 } from "react-icons/bs";
-import { v4 as uuidv4 } from "uuid";
 import AssignmentRowControls from "./AssignmentRowControls";
 import AssignmentGroupControls from "./AssignmentGroupControls";
 
@@ -47,6 +49,11 @@ export default function Assignments() {
   const all = useSelector(
     (s: RootState) => s.assignmentsReducer.assignments
   ) as Assignment[];
+  const currentUser = useSelector(
+    (s: RootState) => s.accountReducer.currentUser
+  ) as { role?: string } | null;
+  const role = currentUser?.role ?? "STUDENT";
+  const isEditor = role === "FACULTY" || role === "TA" || role === "ADMIN";
 
   const groups = ["ASSIGNMENTS", "QUIZZES", "EXAMS", "PROJECTS"] as const;
   const weights: Record<(typeof groups)[number], string> = {
@@ -58,34 +65,38 @@ export default function Assignments() {
 
   const items = (all ?? []).filter((a) => a.course === cid);
 
-  const addNew = () => {
-    const newId = uuidv4();
-    dispatch(
-      addAssignment({
-        _id: newId,
-        title: "New Assignment",
-        course: cid,
-        group: "ASSIGNMENTS",
-        availableFrom: "",
-        availableUntil: "",
-        dueDate: "",
-      })
-    );
-    router.push(`/Courses/${cid}/Assignments/${newId}`);
+  const addNew = async () => {
+    if (!cid) return;
+    const created = await coursesClient.createAssignmentForCourse(cid, {
+      title: "New Assignment",
+      course: cid,
+      group: "ASSIGNMENTS",
+    });
+    dispatch(addAssignment(created));
+    router.push(`/Courses/${cid}/Assignments/${created._id}`);
   };
 
-  const handleDelete = (assignmentId: string) => {
+  const handleDelete = async (assignmentId: string) => {
     if (
       typeof window !== "undefined" &&
       window.confirm("Delete this assignment?")
     ) {
+      await coursesClient.deleteAssignment(assignmentId);
       dispatch(deleteAssignment(assignmentId));
     }
   };
 
-  const handleUpdate = (assignment: Assignment) => {
-    dispatch(updateAssignment(assignment));
+  const handleUpdate = async (assignment: Assignment) => {
+    const updated = await coursesClient.updateAssignment(assignment);
+    dispatch(updateAssignment(updated));
   };
+
+  useEffect(() => {
+    if (!cid) return;
+    coursesClient
+      .findAssignmentsForCourse(cid)
+      .then((as) => dispatch(setAssignments(as)));
+  }, [cid, dispatch]);
 
   return (
     <div id="wd-assignments" className="p-3">
@@ -121,13 +132,15 @@ export default function Assignments() {
           >
             + Group
           </button>
-          <button
-            id="wd-assignments-add"
-            onClick={addNew}
-            className="px-4 py-2 rounded bg-danger border border-danger text-white"
-          >
-            + Assignment
-          </button>
+          {isEditor && (
+            <button
+              id="wd-assignments-add"
+              onClick={addNew}
+              className="px-4 py-2 rounded bg-danger border border-danger text-white"
+            >
+              + Assignment
+            </button>
+          )}
         </div>
       </div>
 
@@ -152,7 +165,10 @@ export default function Assignments() {
                   style={caretStyle}
                 />
                 <b style={titleColor}>{group}</b>
-                <AssignmentGroupControls weight={weights[group]} />
+                <AssignmentGroupControls
+                  weight={weights[group]}
+                  canEdit={isEditor}
+                />
               </div>
 
               <ListGroup className="wd-lessons rounded-0">
@@ -182,13 +198,19 @@ export default function Assignments() {
                       {/* navigate to editor on title click */}
                       {!a.editing && (
                         <>
-                          <Link
-                            href={`/Courses/${cid}/Assignments/${a._id}`}
-                            className="wd-assignment-link fw-semibold text-decoration-none"
-                            style={titleColor}
-                          >
-                            {a.title}
-                          </Link>
+                          {isEditor ? (
+                            <Link
+                              href={`/Courses/${cid}/Assignments/${a._id}`}
+                              className="wd-assignment-link fw-semibold text-decoration-none"
+                              style={titleColor}
+                            >
+                              {a.title}
+                            </Link>
+                          ) : (
+                            <span className="fw-semibold" style={titleColor}>
+                              {a.title}
+                            </span>
+                          )}
                           <div style={metaColor}>
                             <span className="text-danger">
                               {a.moduleTag ?? "Multiple Modules"}
@@ -221,10 +243,12 @@ export default function Assignments() {
                       )}
                     </div>
 
-                    <AssignmentRowControls
-                      assignmentId={a._id}
-                      onDelete={handleDelete}
-                    />
+                    {isEditor && (
+                      <AssignmentRowControls
+                        assignmentId={a._id}
+                        onDelete={handleDelete}
+                      />
+                    )}
                   </ListGroupItem>
                 ))}
               </ListGroup>

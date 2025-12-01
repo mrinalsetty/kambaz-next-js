@@ -1,21 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { ListGroup, ListGroupItem, FormControl } from "react-bootstrap";
 import ModulesControls from "./ModulesControls";
 import LessonControlButtons from "./LessonControlButtons";
 import ModuleControlButtons from "./ModuleControlButtons";
 import { BsGripVertical } from "react-icons/bs";
-
 import { useDispatch, useSelector } from "react-redux";
-import type { RootState } from "../../../store";
-import {
-  addModule as addModuleAction,
-  deleteModule as deleteModuleAction,
-  updateModule as updateModuleAction,
-  editModule as editModuleAction,
-} from "./reducer";
+import type { RootState, AppDispatch } from "../../../store";
+import { setModules, updateModuleLocal } from "./reducer";
+import * as client from "../../client";
 
 type Lesson = { _id: string; name: string };
 type Module = {
@@ -34,16 +29,28 @@ export default function Modules() {
   const modules = useSelector(
     (state: RootState) => state.modulesReducer.modules
   ) as Module[];
+  const currentUser = useSelector(
+    (state: RootState) => state.accountReducer.currentUser
+  ) as { role?: string } | null;
+  const role = currentUser?.role ?? "STUDENT";
+  const isEditor = role === "FACULTY" || role === "TA" || role === "ADMIN";
 
   const dispatch = useDispatch();
+
+  useLoadModules(cid, dispatch as AppDispatch);
 
   return (
     <div>
       <ModulesControls
         moduleName={moduleName}
         setModuleName={setModuleName}
-        addModule={() => {
-          dispatch(addModuleAction({ name: moduleName, course: cid }));
+        addModule={async () => {
+          if (!cid) return;
+          const newModule = await client.createModuleForCourse(cid, {
+            name: moduleName,
+            course: cid,
+          });
+          dispatch(setModules([...modules, newModule]));
           setModuleName("");
         }}
       />
@@ -63,20 +70,24 @@ export default function Modules() {
                 <BsGripVertical className="me-2 fs-3" />
 
                 {!module.editing && module.name}
-                {module.editing && (
+                {module.editing && isEditor && (
                   <FormControl
                     className="w-50 d-inline-block"
                     defaultValue={module.name}
                     onChange={(e) =>
                       dispatch(
-                        updateModuleAction({ ...module, name: e.target.value })
+                        updateModuleLocal({ ...module, name: e.target.value })
                       )
                     }
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
-                        dispatch(
-                          updateModuleAction({ ...module, editing: false })
-                        );
+                        client
+                          .updateModule({ ...module, editing: false })
+                          .then((updated) => {
+                            dispatch(
+                              updateModuleLocal({ ...updated, editing: false })
+                            );
+                          });
                       }
                     }}
                   />
@@ -84,12 +95,22 @@ export default function Modules() {
 
                 <ModuleControlButtons
                   moduleId={module._id}
-                  deleteModule={(moduleId) =>
-                    dispatch(deleteModuleAction(moduleId))
-                  }
-                  editModule={(moduleId) =>
-                    dispatch(editModuleAction(moduleId))
-                  }
+                  deleteModule={async (moduleId) => {
+                    await client.deleteModule(moduleId);
+                    dispatch(
+                      setModules(modules.filter((m) => m._id !== moduleId))
+                    );
+                  }}
+                  editModule={(moduleId) => {
+                    // reference moduleId to satisfy lint and ensure correct id
+                    dispatch(
+                      updateModuleLocal({
+                        ...module,
+                        _id: moduleId,
+                        editing: true,
+                      })
+                    );
+                  }}
                 />
               </div>
 
@@ -110,4 +131,21 @@ export default function Modules() {
       </ListGroup>
     </div>
   );
+}
+
+// Fetch modules when cid changes
+export function ModulesFetcherWrapper({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return <>{children}</>;
+}
+
+// side effect
+function useLoadModules(cid: string | undefined, dispatch: AppDispatch) {
+  useEffect(() => {
+    if (!cid) return;
+    client.findModulesForCourse(cid).then((ms) => dispatch(setModules(ms)));
+  }, [cid, dispatch]);
 }
