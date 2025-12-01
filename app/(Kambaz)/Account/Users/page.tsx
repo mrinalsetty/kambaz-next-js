@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { FormControl } from "react-bootstrap";
+import { FaPlus } from "react-icons/fa";
 import PeopleTable from "../../Courses/[cid]/People/Table";
 import * as client from "../client";
 import type { User } from "../client";
@@ -39,6 +40,19 @@ export default function Users() {
     }
   };
 
+  const handleCreateUser = async () => {
+    const user = await client.createUser({
+      firstName: "New",
+      lastName: `User${users.length + 1}`,
+      username: `newuser${Date.now()}`,
+      password: "password123",
+      email: `email${users.length + 1}@neu.edu`,
+      section: "S101",
+      role: "STUDENT",
+    });
+    setUsers([...users, user]);
+  };
+
   useEffect(() => {
     fetchUsers();
   }, [uid]);
@@ -46,6 +60,14 @@ export default function Users() {
   return (
     <div>
       <h3>Users</h3>
+
+      <button
+        onClick={handleCreateUser}
+        className="float-end btn btn-danger wd-add-people"
+      >
+        <FaPlus className="me-2" />
+        Users
+      </button>
 
       <div className="mb-3 clearfix">
         <FormControl

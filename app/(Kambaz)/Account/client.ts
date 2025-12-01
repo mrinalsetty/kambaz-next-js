@@ -83,3 +83,8 @@ export const deleteUser = async (userId: string) => {
   const response = await axios.delete(`${USERS_API}/${userId}`);
   return response.data;
 };
+
+export const createUser = async (user: Omit<User, "_id">): Promise<User> => {
+  const { data } = await axiosWithCredentials.post(USERS_API, user);
+  return data as User;
+};
