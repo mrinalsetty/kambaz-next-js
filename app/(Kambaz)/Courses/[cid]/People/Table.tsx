@@ -1,14 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
 import { Table } from "react-bootstrap";
 import { FaUserCircle } from "react-icons/fa";
-import * as coursesClient from "../../../client";
-import * as accountClient from "../../../../Account/client";
 
 type User = {
-  _id: string;
+  _id?: string;
   firstName?: string;
   lastName?: string;
   loginId?: string;
@@ -18,30 +14,13 @@ type User = {
   totalActivity?: string;
 };
 
-type Enrollment = { _id: string; user: string; course: string };
-
-export default function PeopleTable() {
-  const { cid } = useParams<{ cid: string }>();
-  const [users, setUsers] = useState<User[]>([]);
-  const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
-
-  useEffect(() => {
-    if (!cid) return;
-    Promise.all([
-      accountClient.findAllUsers(),
-      coursesClient.findAllEnrollments(),
-    ])
-      .then(([allUsers, allEnrollments]) => {
-        setUsers((allUsers as User[]) ?? []);
-        setEnrollments((allEnrollments as Enrollment[]) ?? []);
-      })
-      .catch(() => {});
-  }, [cid]);
-
-  const courseUsers = users.filter((u) =>
-    enrollments.some((e) => e.user === u._id && e.course === cid)
-  );
-
+export default function PeopleTable({
+  users = [],
+  fetchUsers,
+}: {
+  users?: User[];
+  fetchUsers: () => void;
+}) {
   return (
     <div id="wd-people-table">
       <Table striped>
@@ -56,8 +35,8 @@ export default function PeopleTable() {
           </tr>
         </thead>
         <tbody>
-          {courseUsers.map((user) => (
-            <tr key={user._id}>
+          {users.map((user, index) => (
+            <tr key={user._id ?? `user-${index}`}>
               <td className="wd-full-name text-nowrap">
                 <FaUserCircle className="me-2 fs-1 text-secondary" />
                 <span className="wd-first-name">{user.firstName}</span>{" "}

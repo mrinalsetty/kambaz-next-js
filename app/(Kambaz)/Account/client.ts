@@ -44,6 +44,6 @@ export const updateUser = async (user: User): Promise<User> => {
   return data as User;
 };
 export const findAllUsers = async (): Promise<User[]> => {
-  const { data } = await axios.get(USERS_API);
+  const { data } = await axiosWithCredentials.get(USERS_API);
   return data as User[];
 };
