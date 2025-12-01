@@ -78,3 +78,8 @@ export const findUserById = async (id: string): Promise<User> => {
   const { data } = await axiosWithCredentials.get(`${USERS_API}/${id}`);
   return data as User;
 };
+
+export const deleteUser = async (userId: string) => {
+  const response = await axios.delete(`${USERS_API}/${userId}`);
+  return response.data;
+};

@@ -35,8 +35,13 @@ export default function PeopleDetails({ uid, onClose }: PeopleDetailsProps) {
     }
   }, [uid]);
 
-  // If there is no id, don’t render the panel
   if (!uid) return null;
+
+  const handleDelete = async () => {
+    if (!uid) return;
+    await client.deleteUser(uid);
+    onClose();
+  };
 
   return (
     <div className="wd-people-details position-fixed top-0 end-0 bottom-0 bg-white p-4 shadow w-25">
@@ -61,6 +66,19 @@ export default function PeopleDetails({ uid, onClose }: PeopleDetailsProps) {
       <br />
       <b>Total Activity:</b>{" "}
       <span className="wd-total-activity">{user?.totalActivity}</span>
+      <hr />
+      <button
+        onClick={handleDelete}
+        className="btn btn-danger float-end wd-delete"
+      >
+        Delete
+      </button>
+      <button
+        onClick={onClose}
+        className="btn btn-secondary float-end me-2 wd-cancel"
+      >
+        Cancel
+      </button>
     </div>
   );
 }
