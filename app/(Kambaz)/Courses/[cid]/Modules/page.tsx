@@ -11,15 +11,9 @@ import { useDispatch, useSelector } from "react-redux";
 import type { RootState, AppDispatch } from "../../../store";
 import { setModules, updateModuleLocal } from "./reducer";
 import * as client from "../../client";
+import type { Module as CourseModule } from "../../client";
 
-type Lesson = { _id: string; name: string };
-type Module = {
-  _id: string;
-  name: string;
-  course: string;
-  lessons?: Lesson[];
-  editing?: boolean;
-};
+type Lesson = { _id?: string; name: string };
 
 export default function Modules() {
   const { cid } = useParams<{ cid: string }>();
@@ -28,10 +22,12 @@ export default function Modules() {
 
   const modules = useSelector(
     (state: RootState) => state.modulesReducer.modules
-  ) as Module[];
+  ) as CourseModule[];
+
   const currentUser = useSelector(
     (state: RootState) => state.accountReducer.currentUser
   ) as { role?: string } | null;
+
   const role = currentUser?.role ?? "STUDENT";
   const isEditor = role === "FACULTY" || role === "TA" || role === "ADMIN";
 
@@ -49,7 +45,7 @@ export default function Modules() {
           const newModule = await client.createModuleForCourse(cid, {
             name: moduleName,
             course: cid,
-          });
+          } as CourseModule);
           dispatch(setModules([...modules, newModule]));
           setModuleName("");
         }}
@@ -60,8 +56,8 @@ export default function Modules() {
       <br />
       <ListGroup className="rounded-0" id="wd-modules">
         {modules
-          .filter((module: Module) => module.course === cid)
-          .map((module: Module) => (
+          .filter((module: CourseModule) => module.course === cid)
+          .map((module: CourseModule) => (
             <ListGroupItem
               key={module._id}
               className="wd-module p-0 mb-5 fs-5 border-gray"
@@ -76,33 +72,39 @@ export default function Modules() {
                     defaultValue={module.name}
                     onChange={(e) =>
                       dispatch(
-                        updateModuleLocal({ ...module, name: e.target.value })
+                        updateModuleLocal({
+                          ...module,
+                          name: e.target.value,
+                        })
                       )
                     }
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        client
-                          .updateModule({ ...module, editing: false })
-                          .then((updated) => {
-                            dispatch(
-                              updateModuleLocal({ ...updated, editing: false })
-                            );
-                          });
+                    onKeyDown={async (e) => {
+                      if (e.key === "Enter" && cid) {
+                        const updated = await client.updateModule(cid, {
+                          ...module,
+                          editing: false,
+                        });
+                        dispatch(
+                          updateModuleLocal({
+                            ...updated,
+                            editing: false,
+                          })
+                        );
                       }
                     }}
                   />
                 )}
 
                 <ModuleControlButtons
-                  moduleId={module._id}
+                  moduleId={module._id!}
                   deleteModule={async (moduleId) => {
-                    await client.deleteModule(moduleId);
+                    if (!cid) return;
+                    await client.deleteModule(cid, moduleId);
                     dispatch(
                       setModules(modules.filter((m) => m._id !== moduleId))
                     );
                   }}
                   editModule={(moduleId) => {
-                    // reference moduleId to satisfy lint and ensure correct id
                     dispatch(
                       updateModuleLocal({
                         ...module,
@@ -133,7 +135,6 @@ export default function Modules() {
   );
 }
 
-// Fetch modules when cid changes
 export function ModulesFetcherWrapper({
   children,
 }: {
@@ -142,8 +143,7 @@ export function ModulesFetcherWrapper({
   return <>{children}</>;
 }
 
-// side effect
-function useLoadModules(cid: string | undefined, dispatch: AppDispatch) {
+function useLoadModules(cid: string, dispatch: AppDispatch) {
   useEffect(() => {
     if (!cid) return;
     client.findModulesForCourse(cid).then((ms) => dispatch(setModules(ms)));
