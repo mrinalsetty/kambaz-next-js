@@ -27,8 +27,6 @@ import {
   FormControl,
 } from "react-bootstrap";
 
-// Local interface no longer needed; Redux courseDraft holds editable fields
-
 export default function Dashboard() {
   const coursesState = useSelector((state: RootState) => state.coursesReducer);
   const {
@@ -55,10 +53,13 @@ export default function Dashboard() {
   const loadData = useCallback(async () => {
     if (!currentUser) return;
     try {
-      const [all, myEnrollments] = await Promise.all([
+      const [all, rawEnrollments] = await Promise.all([
         client.fetchAllCourses(),
         client.fetchMyEnrollments(),
       ]);
+
+      const myEnrollments = Array.isArray(rawEnrollments) ? rawEnrollments : [];
+
       const myCourses = all.filter((c) =>
         myEnrollments.some((e) => e.course === c._id)
       );
@@ -69,12 +70,14 @@ export default function Dashboard() {
       console.error("Failed to load courses/enrollments", e);
     }
   }, [currentUser, dispatch]);
+
   const createCourse = async () => {
     const { name, description, image } = courseDraft;
     await client.createCourse({ name, description, image });
     await loadData();
     dispatch(resetCourseDraft());
   };
+
   const performUpdateCourse = async () => {
     if (!courseDraft._id) return;
     const { _id, name, description, image } = courseDraft;
@@ -96,6 +99,7 @@ export default function Dashboard() {
     );
     dispatch(resetCourseDraft());
   };
+
   const performDeleteCourse = async (courseId: string) => {
     await client.deleteCourse(courseId);
     dispatch(setAllCourses(allCourses.filter((c) => c._id !== courseId)));
@@ -107,10 +111,13 @@ export default function Dashboard() {
     enrollments.some((e) => e.course === courseId);
 
   const refreshEnrollments = async () => {
-    const [all, myEnrollments] = await Promise.all([
+    const [all, rawEnrollments] = await Promise.all([
       client.fetchAllCourses(),
       client.fetchMyEnrollments(),
     ]);
+
+    const myEnrollments = Array.isArray(rawEnrollments) ? rawEnrollments : [];
+
     const myCourses = all.filter((c) =>
       myEnrollments.some((e) => e.course === c._id)
     );
@@ -118,10 +125,12 @@ export default function Dashboard() {
     dispatch(setEnrollments(myEnrollments));
     dispatch(setCourses(myCourses));
   };
+
   const enroll = async (courseId: string) => {
     await client.enrollInCourse(courseId);
     await refreshEnrollments();
   };
+
   const unenroll = async (courseId: string) => {
     await client.unenrollFromCourse(courseId);
     await refreshEnrollments();
