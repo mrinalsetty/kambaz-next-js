@@ -1,4 +1,5 @@
 import axios from "axios";
+
 const HTTP_SERVER =
   process.env.NEXT_PUBLIC_HTTP_SERVER ||
   "https://kambaz-node-server-app-aaaz.onrender.com";
@@ -19,12 +20,14 @@ export interface Course {
   description?: string;
   image?: string;
 }
+
 export interface Lesson {
   _id?: string;
   name: string;
   description?: string;
   module?: string;
 }
+
 export interface Module {
   _id?: string;
   name: string;
@@ -33,6 +36,7 @@ export interface Module {
   lessons?: Lesson[];
   editing?: boolean;
 }
+
 export interface Assignment {
   _id?: string;
   title: string;
@@ -44,6 +48,7 @@ export interface Assignment {
   availableFrom?: string;
   availableUntil?: string;
 }
+
 export interface Enrollment {
   _id?: string;
   user: string;
@@ -159,15 +164,31 @@ export const fetchMyEnrollments = async (): Promise<Enrollment[]> => {
   return data as Enrollment[];
 };
 
-export const enrollInCourse = async (courseId: string): Promise<Enrollment> => {
+export const enrollIntoCourse = async (
+  userId: string,
+  courseId: string
+): Promise<Enrollment> => {
   const { data } = await axiosWithCredentials.post(
-    `${COURSES_API}/${courseId}/enroll`
+    `${USERS_API}/${userId}/courses/${courseId}`
   );
   return data as Enrollment;
 };
 
+export const unenrollFromCourseForUser = async (
+  userId: string,
+  courseId: string
+): Promise<void> => {
+  await axiosWithCredentials.delete(
+    `${USERS_API}/${userId}/courses/${courseId}`
+  );
+};
+
+export const enrollInCourse = async (courseId: string): Promise<Enrollment> => {
+  return enrollIntoCourse("current", courseId);
+};
+
 export const unenrollFromCourse = async (courseId: string): Promise<void> => {
-  await axiosWithCredentials.delete(`${COURSES_API}/${courseId}/enroll`);
+  return unenrollFromCourseForUser("current", courseId);
 };
 
 export const findAllEnrollments = async (): Promise<Enrollment[]> => {
