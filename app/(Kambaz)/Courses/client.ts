@@ -169,7 +169,19 @@ export const fetchMyEnrollments = async (): Promise<Enrollment[]> => {
   const { data } = await axiosWithCredentials.get(
     `${USERS_API}/current/enrollments`
   );
-  return data as Enrollment[];
+
+  if (Array.isArray(data)) {
+    return data as Enrollment[];
+  }
+
+  if (
+    data &&
+    Array.isArray((data as { enrollments?: Enrollment[] }).enrollments)
+  ) {
+    return (data as { enrollments: Enrollment[] }).enrollments;
+  }
+
+  return [];
 };
 
 export const enrollInCourse = async (courseId: string): Promise<Enrollment> => {

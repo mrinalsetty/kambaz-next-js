@@ -290,7 +290,7 @@ export default function Dashboard() {
                             </button>
                           </>
                         )}
-                        {!isEnrolled(course._id!) && (
+                        {viewMode === "ALL" && !isEnrolled(course._id!) && (
                           <button
                             onClick={(e) => {
                               e.preventDefault();
@@ -301,7 +301,7 @@ export default function Dashboard() {
                             Enroll
                           </button>
                         )}
-                        {isEnrolled(course._id!) && (
+                        {viewMode === "ALL" && isEnrolled(course._id!) && (
                           <button
                             onClick={(e) => {
                               e.preventDefault();
