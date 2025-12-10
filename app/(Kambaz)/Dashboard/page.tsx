@@ -240,7 +240,7 @@ export default function Dashboard() {
                   >
                     <CardImg
                       variant="top"
-                      src={course.image}
+                      src={course.image || "/images/reactjs.jpg"}
                       width="100%"
                       height={160}
                     />
