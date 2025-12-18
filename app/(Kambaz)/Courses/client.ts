@@ -1,11 +1,14 @@
 import axios from "axios";
+
 const HTTP_SERVER =
   process.env.NEXT_PUBLIC_HTTP_SERVER ||
   "https://kambaz-node-server-app-aaaz.onrender.com";
+
 const axiosWithCredentials = axios.create({
   withCredentials: true,
   baseURL: HTTP_SERVER,
 });
+
 const COURSES_API = `${HTTP_SERVER}/api/courses`;
 const USERS_API = `${HTTP_SERVER}/api/users`;
 const MODULES_API = `${HTTP_SERVER}/api/modules`;
@@ -17,12 +20,14 @@ export interface Course {
   description?: string;
   image?: string;
 }
+
 export interface Lesson {
   _id?: string;
   name: string;
   description?: string;
   module?: string;
 }
+
 export interface Module {
   _id?: string;
   name: string;
@@ -31,6 +36,7 @@ export interface Module {
   lessons?: Lesson[];
   editing?: boolean;
 }
+
 export interface Assignment {
   _id?: string;
   title: string;
@@ -42,10 +48,19 @@ export interface Assignment {
   availableFrom?: string;
   availableUntil?: string;
 }
+
 export interface Enrollment {
   _id?: string;
   user: string;
   course: string;
+}
+
+export interface User {
+  _id?: string;
+  username?: string;
+  firstName?: string;
+  lastName?: string;
+  role?: string;
 }
 
 export const fetchMyCourses = async (): Promise<Course[]> => {
@@ -54,10 +69,12 @@ export const fetchMyCourses = async (): Promise<Course[]> => {
   );
   return data as Course[];
 };
+
 export const fetchAllCourses = async (): Promise<Course[]> => {
   const { data } = await axios.get(COURSES_API);
   return data as Course[];
 };
+
 export const createCourse = async (course: Course): Promise<Course> => {
   const { data } = await axiosWithCredentials.post(
     `${USERS_API}/current/courses`,
@@ -65,6 +82,7 @@ export const createCourse = async (course: Course): Promise<Course> => {
   );
   return data as Course;
 };
+
 export const updateCourse = async (course: Course): Promise<Course> => {
   const { data } = await axiosWithCredentials.put(
     `${COURSES_API}/${course._id}`,
@@ -72,6 +90,7 @@ export const updateCourse = async (course: Course): Promise<Course> => {
   );
   return data as Course;
 };
+
 export const deleteCourse = async (courseId: string): Promise<void> => {
   await axiosWithCredentials.delete(`${COURSES_API}/${courseId}`);
 };
@@ -82,6 +101,7 @@ export const findModulesForCourse = async (
   const { data } = await axios.get(`${COURSES_API}/${courseId}/modules`);
   return data as Module[];
 };
+
 export const createModuleForCourse = async (
   courseId: string,
   module: Module
@@ -92,12 +112,22 @@ export const createModuleForCourse = async (
   );
   return data as Module;
 };
-export const deleteModule = async (moduleId: string): Promise<void> => {
-  await axiosWithCredentials.delete(`${MODULES_API}/${moduleId}`);
+
+export const deleteModule = async (
+  courseId: string,
+  moduleId: string
+): Promise<void> => {
+  await axiosWithCredentials.delete(
+    `${COURSES_API}/${courseId}/modules/${moduleId}`
+  );
 };
-export const updateModule = async (module: Module): Promise<Module> => {
+
+export const updateModule = async (
+  courseId: string,
+  module: Module
+): Promise<Module> => {
   const { data } = await axiosWithCredentials.put(
-    `${MODULES_API}/${module._id}`,
+    `${COURSES_API}/${courseId}/modules/${module._id}`,
     module
   );
   return data as Module;
@@ -109,6 +139,7 @@ export const findAssignmentsForCourse = async (
   const { data } = await axios.get(`${COURSES_API}/${courseId}/assignments`);
   return data as Assignment[];
 };
+
 export const createAssignmentForCourse = async (
   courseId: string,
   assignment: Assignment
@@ -119,6 +150,7 @@ export const createAssignmentForCourse = async (
   );
   return data as Assignment;
 };
+
 export const updateAssignment = async (
   assignment: Assignment
 ): Promise<Assignment> => {
@@ -128,6 +160,7 @@ export const updateAssignment = async (
   );
   return data as Assignment;
 };
+
 export const deleteAssignment = async (assignmentId: string): Promise<void> => {
   await axiosWithCredentials.delete(`${ASSIGNMENTS_API}/${assignmentId}`);
 };
@@ -136,14 +169,28 @@ export const fetchMyEnrollments = async (): Promise<Enrollment[]> => {
   const { data } = await axiosWithCredentials.get(
     `${USERS_API}/current/enrollments`
   );
-  return data as Enrollment[];
+
+  if (Array.isArray(data)) {
+    return data as Enrollment[];
+  }
+
+  if (
+    data &&
+    Array.isArray((data as { enrollments?: Enrollment[] }).enrollments)
+  ) {
+    return (data as { enrollments: Enrollment[] }).enrollments;
+  }
+
+  return [];
 };
+
 export const enrollInCourse = async (courseId: string): Promise<Enrollment> => {
   const { data } = await axiosWithCredentials.post(
     `${COURSES_API}/${courseId}/enroll`
   );
   return data as Enrollment;
 };
+
 export const unenrollFromCourse = async (courseId: string): Promise<void> => {
   await axiosWithCredentials.delete(`${COURSES_API}/${courseId}/enroll`);
 };
@@ -153,4 +200,30 @@ export const findAllEnrollments = async (): Promise<Enrollment[]> => {
     `${HTTP_SERVER}/api/enrollments`
   );
   return data as Enrollment[];
+};
+
+export const enrollIntoCourse = async (
+  userId: string,
+  courseId: string
+): Promise<Enrollment> => {
+  const { data } = await axiosWithCredentials.post(
+    `${USERS_API}/${userId}/courses/${courseId}`
+  );
+  return data as Enrollment;
+};
+
+export const unenrollFromCourseForUser = async (
+  userId: string,
+  courseId: string
+): Promise<void> => {
+  await axiosWithCredentials.delete(
+    `${USERS_API}/${userId}/courses/${courseId}`
+  );
+};
+
+export const findUsersForCourse = async (courseId: string): Promise<User[]> => {
+  const { data } = await axiosWithCredentials.get(
+    `${COURSES_API}/${courseId}/users`
+  );
+  return data as User[];
 };
